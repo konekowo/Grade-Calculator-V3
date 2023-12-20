@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Grade Calculator</title>
+    <style>
+        @font-face {
+            font-family: Torus;
+            src: url(./Torus.woff2);
+        }
+
+        body{
+            background-color: #16161f;
+        }
+
+        .text {
+            color: white;
+            font-family: Torus;
+        }
+
+        .text.header {
+            font-size: 30px;
+        }
+
+        select {
+            width: 250px;
+            height: 30px;
+            position: relative;
+            left: 50%;
+            transform: translate(-50%);
+            text-align: center;
+            background-color: #232231;
+            color: white;
+            border: solid 1px gray;
+            border-radius: 5px;
+        }
+        input {
+            width: 250px;
+            height: 30px;
+            position: relative;
+            left: 50%;
+            transform: translate(-50%);
+            text-align: center;
+            background-color: #232231;
+            color: white;
+            border: solid 1px gray;
+            border-radius: 5px;
+        }
+
+        #buttonLogin {
+            width: 100px;
+            height: 40px;
+            position: relative;
+            left: 50%;
+            transform: translate(-50%, 30px);
+            color: white;
+            background-color: #2FCB36FF;
+            border: solid 1px gray;
+            border-radius: 5px;
+            transition: 0.3s background-color;
+        }
+        #buttonLogin:hover {
+            background-color: #6cff73;
+        }
+        #buttonLogin:active {
+            background-color: #298f2d;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="nav" style="position: fixed; top: 0; left: 0; background-color: #232231; width: 100vw; height: 50px;">
+        <div style="position: relative; height: 100%; width: 470px; top:-4px;">
+            <h1 style="margin: 8px; margin-left: 10px;" class="text header">Grade Calculator V3 by kone</h1>
+        </div>
+    </div>
+
+    <script src="dist/main.js"></script>
+</body>
+
+</html>

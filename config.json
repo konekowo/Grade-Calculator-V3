@@ -1,0 +1,9 @@
+{
+  "backendPort": 9090,
+  "SchoolDistricts": [
+    {
+      "code": "SCPS",
+      "name": "Seminole County Public Schools"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "grade-calculator-v3",
+  "version": "1.0.0",
+  "description": "Grade Calculator V3",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently --kill-others \"npm run start:frontend\" \"npm run start:backend\"",
+    "start:frontend": "cd frontend && npm run start",
+    "start:backend": "cd backend && npm run start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/konekowo/Grade-Calculator-V3.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/konekowo/Grade-Calculator-V3/issues"
+  },
+  "homepage": "https://github.com/konekowo/Grade-Calculator-V3#readme",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
