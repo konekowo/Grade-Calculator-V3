@@ -1,5 +1,6 @@
 import {Dialog} from "./Dialog";
 import config from "../../config.json";
+import {StatusQuery} from "./StatusQuery";
 
 window.addEventListener("DOMContentLoaded", () => {
 
@@ -16,8 +17,8 @@ window.addEventListener("DOMContentLoaded", () => {
         "<select id='schoolDistrict'>" +
         schoolDistrictNamesHTML +
         "</select>" +
-        "<p class='text' style='text-align: center;' id='usernameInput'>Username/Student ID:</p>" +
-        "<input type='text' placeholder='Username/Student ID'>" +
+        "<p class='text' style='text-align: center;'>Username/Student ID:</p>" +
+        "<input type='text' placeholder='Username/Student ID' id='usernameInput'>" +
         "<p class='text' style='text-align: center;'>Password:</p>" +
         "<input type='password' placeholder='Password' id='passwordInput'>" +
         "<br>" +
@@ -53,9 +54,17 @@ window.onClickLogin = () => {
     };
 
     fetch('http://localhost:9090/api/login', options)
-        .then(response => response.json())
+        .then(async response => {
+            let textResponse = await response.text();
+            if (!textResponse.startsWith("Error:")) {
+                return JSON.parse(textResponse);
+            } else {
+                console.warn(textResponse);
+                return JSON.parse("{}");
+            }
+        })
         .then(response => {
-
+            StatusQuery.registerQueryInterval(response.clientID);
         })
         .catch(err => console.error(err));
 

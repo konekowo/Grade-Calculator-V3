@@ -32,7 +32,15 @@ export class StatusQuery {
         };
 
         fetch('http://localhost:9090/api/status', options)
-            .then(response => response.json())
+            .then(async response => {
+                let textResponse = await response.text();
+                if (!textResponse.startsWith("Error:")) {
+                    return JSON.parse(textResponse);
+                } else {
+                    this.errorMessage = textResponse;
+                    return JSON.parse("{}");
+                }
+            })
             .then(response => {
                 if (response.clientID){
                     this.clientID = response.clientID;
