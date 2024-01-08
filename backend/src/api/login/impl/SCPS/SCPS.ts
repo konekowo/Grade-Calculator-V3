@@ -297,7 +297,7 @@ export class SCPS extends Login {
                                             // @ts-ignore
                                             clientObj.status = Status.Success;
                                             // @ts-ignore
-                                            clientObj.successMsg = allCoursesParsed;
+                                            clientObj.courseGrades = allCoursesParsed;
                                             console.log("Done with "+clientID+"!");
                                             return Status.Success;
                                         }

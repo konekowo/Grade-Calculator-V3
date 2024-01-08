@@ -4,7 +4,7 @@ export class ClientID {
     public readonly clientID: string;
     public expires: number;
     public status: Status;
-    public successMsg?: Course[];
+    public courseGrades?: Course[];
     public errorMessage? : string;
     public screenshot? : any;
 
@@ -16,9 +16,9 @@ export class ClientID {
 }
 
 export enum Status {
-    Failed = -1,
-    LoggingIn,
-    FindingGrades,
-    GrabbingGrades,
-    Success
+    Failed = "Failed",
+    LoggingIn = "Logging In",
+    FindingGrades = "Finding Grades",
+    GrabbingGrades = "Grabbing Grades",
+    Success = "Success"
 }
