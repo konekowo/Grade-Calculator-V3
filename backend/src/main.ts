@@ -80,8 +80,8 @@ app.use('/api/login/', (req: Request, res: Response) => {
     }
 
     if (ClientIDS.getActiveRequests() >= serverConfig.backendMaxActiveRequests){
-        console.warn("Server is currently being rate-limited, consider turning up 'backendMaxActiveRequests' " +
-            "to allow for more requests if your hardware can handle it.");
+        console.warn("\x1b[33mServer is currently being rate-limited, consider turning up 'backendMaxActiveRequests' " +
+            "to allow for more requests if your hardware can handle it.\x1b[0m");
         res.send("Error: This server is currently being rate-limited, please try again later.");
         return;
     }
