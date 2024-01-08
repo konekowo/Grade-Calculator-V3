@@ -34,6 +34,35 @@ export class SCPS extends Login {
             await page.type("#login", StudentID);
             await page.type("#password", Password);
             await page.click("#bLogin");
+            await new Promise(r => setTimeout(r, 1000));
+            const isCorrectPassword = await page.evaluate(()=> {
+                // @ts-ignore
+                if (document.querySelector("#dMessage").children[0].children[1].children[0] === undefined){
+                    return true;
+                }
+                else {
+                    try {
+                        // @ts-ignore
+                        if (document.querySelector("#dMessage").children[0].children[1].children[0].children[0]
+                            .children[0].textContent.startsWith("We are unable to validate the information entered."))
+                        {
+                            return false;
+                        }
+                    }
+                    catch {
+                        return false;
+                    }
+
+                }
+            });
+
+            if (!isCorrectPassword){
+                await browser.close();
+                clientObj.status = Status.Failed;
+                clientObj.errorMessage = "Wrong Password or User ID";
+                console.log("Done with "+clientID+"!");
+                return Status.Failed;
+            }
             const nav = new Promise(res => browser.on('targetcreated', res))
             await nav
             const page2 = await browser.pages().then((pages) => {

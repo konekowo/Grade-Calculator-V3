@@ -1,8 +1,8 @@
-import express, {Request, response, Response} from "express";
+import express, {Request, Response} from "express";
 import serverConfig from "../../config.json";
 import cors from "cors";
 import {LoginManager} from "./api/login/loginManager";
-import {ClientID} from "./ClientID";
+import {ClientID, Status} from "./ClientID";
 import {BrowserInstaller} from "./BrowserInstaller";
 import os from "os";
 import bodyParser from "body-parser";
@@ -26,6 +26,17 @@ export class ClientIDS {
             }
         }
         return null;
+    }
+
+    public static getActiveRequests(){
+        let activeRequests = 0;
+        ClientIDS.clientIDs.forEach((clientID) => {
+            // @ts-ignore
+            if (clientID.status != Status.Success || clientID.status != Status.Failed){
+                activeRequests++;
+            }
+        });
+        return activeRequests;
     }
 }
 
@@ -67,6 +78,14 @@ app.use('/api/login/', (req: Request, res: Response) => {
         res.send("Error: One or more parameters were not set.");
         return;
     }
+
+    if (ClientIDS.getActiveRequests() >= serverConfig.backendMaxActiveRequests){
+        console.warn("Server is currently being rate-limited, consider turning up 'backendMaxActiveRequests' " +
+            "to allow for more requests if your hardware can handle it.");
+        res.send("Error: This server is currently being rate-limited, please try again later.");
+        return;
+    }
+
     let schoolDistrictCode = req.body.schooldistrictcode;
     let isSchoolDistrictInList = false;
     serverConfig.SchoolDistricts.forEach((obj) => {
@@ -74,7 +93,7 @@ app.use('/api/login/', (req: Request, res: Response) => {
             isSchoolDistrictInList = true;
     });
     if (!isSchoolDistrictInList){
-        res.send("The School District code provided is not supported by this Grade Calculator Server!");
+        res.send("Error: The School District code provided is not supported by this Grade Calculator Server!");
         return;
     }
 
