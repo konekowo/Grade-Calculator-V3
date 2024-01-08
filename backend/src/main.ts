@@ -48,6 +48,7 @@ function init() {
     setInterval(()=> {
         for (let i = 0; i < ClientIDS.clientIDs.length; i++){
            if (Date.now() > ClientIDS.clientIDs[i].expires){
+               console.log("Expiring ClientID:", ClientIDS.clientIDs[i].clientID)
                ClientIDS.clientIDs.splice(i, 1);
            }
         };
