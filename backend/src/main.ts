@@ -45,6 +45,13 @@ function init() {
     app.listen(port, () => {
         console.log(`Listening at http://localhost:${port}/`);
     });
+    setInterval(()=> {
+        for (let i = 0; i < ClientIDS.clientIDs.length; i++){
+           if (Date.now() > ClientIDS.clientIDs[i].expires){
+               ClientIDS.clientIDs.splice(i, 1);
+           }
+        };
+    },1000);
 }
 
 app.use(cors({
@@ -80,9 +87,20 @@ app.use('/api/login/', (req: Request, res: Response) => {
     res.send(clientID);
 });
 
-app.use("/api/login/status/", (req: Request, res: Response) => {
-
+app.use("/api/status/", (req: Request, res: Response) => {
+    if (!req.body.clientid){
+        res.send("Error: One or more parameters were not set.");
+        return;
+    }
+    let clientObj = ClientIDS.getUsingClientID(req.body.clientid);
+    if (clientObj === null){
+        res.send("Error: The client ID is expired or does not exist.");
+        return;
+    }
+    res.send(clientObj);
 });
+
+
 
 
 

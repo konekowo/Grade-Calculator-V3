@@ -1,8 +1,10 @@
 import {v4} from "uuid";
+import {Course} from "./api/login/login";
 export class ClientID {
     public readonly clientID: string;
     public expires: number;
     public status: Status;
+    public successMsg?: Course[];
     public errorMessage? : string;
     public screenshot? : any;
 
