@@ -7,11 +7,13 @@ export class ClientID {
     public courseGrades?: Course[];
     public errorMessage? : string;
     public screenshot? : any;
+    public readonly schoolCode: string;
 
-    public constructor() {
+    public constructor(schoolCode: string) {
         this.clientID = v4();
         this.expires = Date.now() + 360000 // expire in 3 minutes
         this.status = Status.LoggingIn;
+        this.schoolCode = schoolCode;
     }
 }
 

@@ -51,7 +51,7 @@ function init() {
                console.log("Expiring ClientID:", ClientIDS.clientIDs[i].clientID)
                ClientIDS.clientIDs.splice(i, 1);
            }
-        };
+        }
     },1000);
 }
 
@@ -63,13 +63,22 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/api/login/', (req: Request, res: Response) => {
 
-    if (!req.body.studentid || !req.body.password){
+    if (!req.body.studentid || !req.body.password || !req.body.schooldistrictcode){
         res.send("Error: One or more parameters were not set.");
         return;
     }
+    let schoolDistrictCode = req.body.schooldistrictcode;
+    let isSchoolDistrictInList = false;
+    serverConfig.SchoolDistricts.forEach((obj) => {
+        if (obj.code == schoolDistrictCode)
+            isSchoolDistrictInList = true;
+    });
+    if (!isSchoolDistrictInList){
+        res.send("The School District code provided is not supported by this Grade Calculator Server!");
+        return;
+    }
 
-
-    let loginScript = loginManager.GetObjWithDistrictCode("SCPS")?.loginScript;
+    let loginScript = loginManager.GetObjWithDistrictCode(schoolDistrictCode)?.loginScript;
     let duplicatedLoginObj;
     if (loginScript !== undefined){
         duplicatedLoginObj = loginScript.duplicate();
@@ -79,7 +88,7 @@ app.use('/api/login/', (req: Request, res: Response) => {
             "Is the login script that was requested by the client registered in the LoginManager?")
     }
 
-    let clientID = new ClientID();
+    let clientID = new ClientID(schoolDistrictCode);
     ClientIDS.clientIDs.push(clientID);
     duplicatedLoginObj.doLogin(clientID.clientID, req.body.studentid, req.body.password).then((result:any) => {
         console.log(result);

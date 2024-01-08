@@ -36,5 +36,28 @@ window.onClickLogin = () => {
     // @ts-ignore
     let passwordInput: string = document.querySelector('#passwordInput').value;
 
+    // Convert district name into district code
+    config.SchoolDistricts.forEach((obj) => {
+        if (obj.name == schoolDistrict){
+            schoolDistrict = obj.code;
+        }
+    });
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'User-Agent': 'insomnia/8.4.5'
+        },
+        body: new URLSearchParams({studentid: usernameInput, password: passwordInput, schooldistrictcode: schoolDistrict})
+    };
+
+    fetch('http://localhost:9090/api/login', options)
+        .then(response => response.json())
+        .then(response => {
+
+        })
+        .catch(err => console.error(err));
+
     
 }
