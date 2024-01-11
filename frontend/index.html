@@ -31,7 +31,7 @@
             text-align: center;
             background-color: #232231;
             color: white;
-            border: solid 1px gray;
+            border: solid 1px rgb(128, 128, 128);
             border-radius: 5px;
         }
         input {
@@ -43,7 +43,7 @@
             text-align: center;
             background-color: #232231;
             color: white;
-            border: solid 1px gray;
+            border: solid 1px rgb(128, 128, 128);
             border-radius: 5px;
         }
 
@@ -52,10 +52,10 @@
             height: 40px;
             position: relative;
             left: 50%;
-            transform: translate(-50%, 30px);
+            transform: translate(-50%, 0px);
             color: white;
             background-color: #2FCB36FF;
-            border: solid 1px gray;
+            border: solid 1px rgb(128, 128, 128);
             border-radius: 5px;
             transition: 0.3s background-color;
         }
@@ -66,6 +66,45 @@
             background-color: #298f2d;
         }
 
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+
+        @-webkit-keyframes rotate {
+            from {
+                -webkit-transform: rotate(0deg);
+            }
+            to {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        .load {
+            width: 40px;
+            height: 40px;
+            border:solid 5px #ffffff;
+            border-radius: 50%;
+            border-right-color: transparent;
+            border-bottom-color: transparent;
+            -webkit-transition: all 0.5s ease-in;
+            -webkit-animation-name:             rotate;
+            -webkit-animation-duration:         1.0s;
+            -webkit-animation-iteration-count:  infinite;
+            -webkit-animation-timing-function: linear;
+
+            transition: all 0.5s ease-in;
+            animation-name:             rotate;
+            animation-duration:         1.0s;
+            animation-iteration-count:  infinite;
+            animation-timing-function: linear;
+        }
     </style>
 </head>
 

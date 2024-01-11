@@ -7,9 +7,15 @@ export class StatusQuery {
     public static screenshot: any;
     public static schoolCode: string;
 
-    public static registerQueryInterval(clientID: string){
+    public static registerQueryInterval(clientID: string, onFinishedCallback?: () => string){
         this.query(clientID);
         let interval = setInterval(()=> {
+            if (this.status == "Success" || this.status == "Failed"){
+                clearInterval(interval);
+                if (onFinishedCallback)
+                    onFinishedCallback();
+                return;
+            }
             if (this.expires){
                 if (Date.now() > this.expires){
                     clearInterval(interval);
@@ -18,7 +24,7 @@ export class StatusQuery {
             this.query(clientID);
 
 
-        }, 1000);
+        }, 2000);
     }
 
     private static query(clientID: string) {

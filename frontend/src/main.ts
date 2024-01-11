@@ -2,6 +2,8 @@ import {Dialog} from "./Dialog";
 import config from "../../config.json";
 import {StatusQuery} from "./StatusQuery";
 
+let loginDialog: Dialog;
+let statusDialog: Dialog;
 window.addEventListener("DOMContentLoaded", () => {
 
     let schoolDistrictNamesHTML = "";
@@ -10,7 +12,7 @@ window.addEventListener("DOMContentLoaded", () => {
         schoolDistrictNamesHTML += ("<option>" + config.SchoolDistricts[i].name + "</option>");
     }
 
-    new Dialog("" +
+    loginDialog = new Dialog("" +
         "<h1 class='text header' style='margin-top: 5px; margin-bottom: 5px; margin-left: 10px;'>Login</h1>" +
         "<hr style='color: white'>" +
         "<p class='text' style='text-align: center;'>School District:</p>" +
@@ -22,7 +24,9 @@ window.addEventListener("DOMContentLoaded", () => {
         "<p class='text' style='text-align: center;'>Password:</p>" +
         "<input type='password' placeholder='Password' id='passwordInput'>" +
         "<br>" +
-        "<button id='buttonLogin' onclick='window.onClickLogin()'>Login</button>"
+        "<padding style='opacity: 0; width: 100%; height: 40px; display: block;'></padding>" +
+        "<button id='buttonLogin' onclick='window.onClickLogin()'>Login</button>",
+        true
     );
 
 
@@ -43,6 +47,18 @@ window.onClickLogin = () => {
             schoolDistrict = obj.code;
         }
     });
+
+    // @ts-ignore
+    document.querySelector("#buttonLogin").setAttribute("disabled", "");
+    loginDialog.CloseDialog();
+
+    statusDialog = new Dialog("" +
+        "<h1 class='text header' style='margin-top: 5px; margin-bottom: 5px; margin-left: 10px;'>Logging In...</h1>" +
+        "<hr style='color: white'>" +
+        "<p class='text' style='text-align: center;'>Please wait while we log you in and process your grades...</p>" +
+        "<p class='text' style='text-align: center;'>Status: <span style='color: rgb(173,248,165)' class='text'>Sending request to server</span></p>" +
+        "<div class='load' style='margin: auto;'></div>",
+        true);
 
     const options = {
         method: 'POST',
