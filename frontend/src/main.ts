@@ -62,10 +62,6 @@ window.onClickLogin = () => {
 
     const options = {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'User-Agent': 'insomnia/8.4.5'
-        },
         body: new URLSearchParams({studentid: usernameInput, password: passwordInput, schooldistrictcode: schoolDistrict})
     };
 
