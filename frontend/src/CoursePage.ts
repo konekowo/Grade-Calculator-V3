@@ -11,12 +11,12 @@ export class CoursePage {
             "      <thead>" +
             "        <tr>" +
             "          <th>Course</th>" +
-            "          <th>Q1</th>" +
-            "          <th>Q2</th>" +
-            "          <th>S1</th>" +
-            "          <th>Q3</th>" +
-            "          <th>Q4</th>" +
-            "          <th>S2</th>" +
+            "          <th class='gradespage head quarter q1'>Q1</th>" +
+            "          <th class='gradespage head quarter q2'>Q2</th>" +
+            "          <th class='gradespage head quarter s1'>S1</th>" +
+            "          <th class='gradespage head quarter q3'>Q3</th>" +
+            "          <th class='gradespage head quarter q4'>Q4</th>" +
+            "          <th class='gradespage head quarter s2'>S2</th>" +
             "        </tr>" +
             "      </thead>" +
             "      <tbody class='gradespage table body'>" +

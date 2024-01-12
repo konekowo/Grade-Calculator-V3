@@ -132,21 +132,27 @@
             padding: 10px;
         }
 
-        .gradespage.table > thead > tr > th:first-child,  .gradespage.table > thead > tr, .gradespage.table{
+        .gradespage > table {
+            border-radius: 5px;
+        }
+
+        .gradespage.table > thead > tr > th:first-child, .gradespage.table > thead > tr{
             border-top-left-radius: 5px;
         }
 
-        .gradespage.table > thead > tr > th:last-child,  .gradespage.table > thead > tr, .gradespage.table{
+        .gradespage.table > thead > tr > th:last-child, .gradespage.table > thead > tr{
             border-top-right-radius: 5px;
         }
 
-        .gradespage.table > tr:last-child > td:last-child, .gradespage.table > tr:last-child, .gradespage.table{
+        .gradespage.table > tr:last-child > td:last-child > tr:last-child{
             border-bottom-right-radius: 5px;
         }
-        .gradespage.table > tr:last-child > td:first-child, .gradespage.table > tr:last-child, .gradespage.table{
+        .gradespage.table > tr:last-child > td:first-child > tr:last-child{
             border-bottom-left-radius: 5px;
         }
-
+        .gradespage.table.quarter {
+            text-align: center;
+        }
 
     </style>
 </head>
