@@ -4,14 +4,10 @@ import {Quarter} from "../../Quarter";
 
 
 export class SCPSCalculator {
+    public static schoolDistrictCode = "SCPS";
     public static calculateQuarterGrade(gradesData: any[], quarter: Quarter, classID: string): number{
-        const schoolDistrictCode = "SCPS";
-        let weights: any;
-        config.SchoolDistricts.forEach((schoolDistrict) => {
-            if (schoolDistrict.code == schoolDistrictCode){
-                weights = schoolDistrict.weights;
-            }
-        });
+
+
         let courseObj: any;
         gradesData.forEach((course) => {
            if (course.courseID == classID){
@@ -25,6 +21,20 @@ export class SCPSCalculator {
                 quarterAssignments = courseObj[key];
             }
         }
+
+        // @ts-ignore
+        return this.calculate(quarterAssignments);
+    }
+
+    public static calculate(quarterAssignments: any[]) {
+
+
+        let weights: any;
+        config.SchoolDistricts.forEach((schoolDistrict) => {
+            if (schoolDistrict.code == this.schoolDistrictCode){
+                weights = schoolDistrict.weights;
+            }
+        });
 
         // @ts-ignore
         for (let key in weights){
@@ -47,10 +57,10 @@ export class SCPSCalculator {
             let points: number = 0;
             let maxPoints: number = 0;
             weights[key]["assignments"].forEach((grade:any) => {
-               let assignmentPoints = parseFloat(grade.points.split("/")[0]);
-               let maxAssignmentPoints = parseFloat(grade.points.split("/")[1]);
-               points += assignmentPoints;
-               maxPoints += maxAssignmentPoints;
+                let assignmentPoints = parseFloat(grade.points.split("/")[0]);
+                let maxAssignmentPoints = parseFloat(grade.points.split("/")[1]);
+                points += assignmentPoints;
+                maxPoints += maxAssignmentPoints;
             });
             // @ts-ignore
             if (!weights[key]["assignments"].length == 0){
@@ -73,6 +83,7 @@ export class SCPSCalculator {
             }
 
         }
+
         return totalGrade;
     }
 }
