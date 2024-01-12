@@ -20,19 +20,17 @@ export class Dialog {
         this.dialogElem.style.transition = "0.5s scale, 0.5s opacity";
         this.dialogElem.style.zIndex = "300";
         this.dialogElem.innerHTML = HTMLcontent;
+        this.dialogElem.style.display = "none";
         document.body.appendChild(this.dialogElem);
         this.createTime = Date.now();
         if (autoOpen){
-            setTimeout(()=> {
-                this.dialogElem.style.scale = "1";
-                this.dialogElem.style.opacity = "1";
-                this.isOpened = true;
-            },1);
+            this.OpenDialog();
         }
     }
 
     public OpenDialog() {
         if (!this.isOpened){
+            this.dialogElem.style.display = "block";
             if (Date.now() - this.createTime > 1){
                 this.dialogElem.style.scale = "1";
                 this.dialogElem.style.opacity = "1";
@@ -52,6 +50,12 @@ export class Dialog {
         if (this.isOpened){
             this.dialogElem.style.scale = "0.7";
             this.dialogElem.style.opacity = "0";
+            setTimeout(()=> {
+                if (!this.isOpened)
+                    this.dialogElem.style.display = "none";
+            },500);
+
+            this.isOpened = false;
         }
     }
 
@@ -61,6 +65,17 @@ export class Dialog {
 
     public GetHtmlDiv() {
         return this.dialogElem;
+    }
+
+    public Destroy() {
+        this.dialogElem.remove();
+    }
+
+    public DestroyWithAnim(){
+        this.CloseDialog();
+        setTimeout(() => {
+            this.dialogElem.remove();
+        }, 500);
     }
 
 }

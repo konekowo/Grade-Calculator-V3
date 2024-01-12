@@ -34,7 +34,8 @@ export class SCPS extends Login {
             await page.type("#login", StudentID);
             await page.type("#password", Password);
             await page.click("#bLogin");
-            await new Promise(r => setTimeout(r, 1000));
+            //await new Promise(r => setTimeout(r, 1000));
+            /*
             const isCorrectPassword = await page.evaluate(()=> {
                 // @ts-ignore
                 if (document.querySelector("#dMessage").children[0].children[1].children[0] === undefined){
@@ -56,6 +57,8 @@ export class SCPS extends Login {
                 }
             });
 
+
+
             if (!isCorrectPassword){
                 await browser.close();
                 clientObj.status = Status.Failed;
@@ -63,6 +66,7 @@ export class SCPS extends Login {
                 console.log("Done with "+clientID+"!");
                 return Status.Failed;
             }
+            */
             const nav = new Promise(res => browser.on('targetcreated', res))
             await nav
             const page2 = await browser.pages().then((pages) => {
@@ -230,7 +234,7 @@ export class SCPS extends Login {
                                             currentCourse = course;
                                         }
                                     });
-                                    //console.log(body);
+                                    console.log("Course ID: "+options3.form.corNumId);
                                     let gradesPage = new JSDOM(body);
                                     // @ts-ignore
                                     let courseName = gradesPage.window.document.querySelector(".gb_heading").children[0].children[0].textContent;

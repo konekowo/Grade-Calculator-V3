@@ -10,6 +10,8 @@
         }
 
         body{
+            padding: 0;
+            margin: 0;
             background-color: #16161f;
         }
 
@@ -105,6 +107,47 @@
             animation-iteration-count:  infinite;
             animation-timing-function: linear;
         }
+
+        .gradespage.tableContainer{
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-height: 75vh;
+            overflow-y: auto;
+        }
+
+        .gradespage.table {
+            font-family: 'Torus';
+            margin: auto;
+            font-size: 21px;
+        }
+        .gradespage.table,.gradespage.table th,.gradespage.table td {
+            border: 1px solid white;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .gradespage.table th,.gradespage.table td{
+            padding: 10px;
+        }
+
+        .gradespage.table > thead > tr > th:first-child,  .gradespage.table > thead > tr, .gradespage.table{
+            border-top-left-radius: 5px;
+        }
+
+        .gradespage.table > thead > tr > th:last-child,  .gradespage.table > thead > tr, .gradespage.table{
+            border-top-right-radius: 5px;
+        }
+
+        .gradespage.table > tr:last-child > td:last-child, .gradespage.table > tr:last-child, .gradespage.table{
+            border-bottom-right-radius: 5px;
+        }
+        .gradespage.table > tr:last-child > td:first-child, .gradespage.table > tr:last-child, .gradespage.table{
+            border-bottom-left-radius: 5px;
+        }
+
+
     </style>
 </head>
 
