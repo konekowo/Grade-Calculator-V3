@@ -132,3 +132,4 @@ dist
 backend/browser
 backend/browserInstallTemp
 backend/screenshot.png
+frontend/src/test.json
