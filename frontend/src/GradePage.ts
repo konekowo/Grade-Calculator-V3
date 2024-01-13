@@ -1,8 +1,10 @@
 import {Quarter} from "./Quarter";
 import {Dialog} from "./Dialog";
 import {StatusQuery} from "./StatusQuery";
+import {DialogModal} from "./DialogModal";
 
 export class GradePage{
+    private dialog: DialogModal;
     public constructor(term: Quarter, courseID: string) {
         let data = StatusQuery.courseGrades;
         let courseData: any;
@@ -21,10 +23,21 @@ export class GradePage{
         }
         console.log(quarterAssignments);
 
-        let dialog = new Dialog("" +
-            "<h1 class='text header' style='margin-top: 5px; margin-bottom: 5px; margin-left: 10px;'>"+term.toString()+" | "+courseData.courseName+"</h1>" +
-            "<hr style='color: white'>" +
-            "<div class='assignmentPage body' style='width: 100%; padding: 0px 5px 0px 5px;'>" +
+
+        // @ts-ignore
+        window["closeAndDestrowAssignmentsWindow" + courseID + term.toString()] = () => {
+            this.dialog.DestroyWithAnim();
+        }
+
+        this.dialog = new DialogModal("" +
+            "<h1 class='text header' style='margin-top: 5px; margin-bottom: 5px; margin-left: 10px;'>"+term.toString()+" | "+courseData.courseName+"" +
+            "<button class='assignmentPage closeButton' onclick='window.closeAndDestrowAssignmentsWindow"+courseID+term.toString()+"();'>X</button>" +
+            "</h1>" +
+            "<hr style='color: white; margin-left: -10px; margin-right: -10px;'>" +
+            "<p class='text' style='margin-left: 10px;'>Course Name: "+courseData.courseName+"</p>" +
+            "<p class='text' style='margin-left: 10px;'>Teacher: "+courseData.teacher+"</p>" +
+            "<p class='text' style='margin-left: 10px;'>Course ID: "+courseData.courseID+"</p>" +
+            "<div class='assignmentPage body' style='width: 100%;'>" +
             "   <table style='color: white' class='assignmentPage table'>" +
             "       <thead class='assignmentPage table head'>" +
             "           <tr>" +
@@ -36,15 +49,17 @@ export class GradePage{
             "               <th>Actions</th>" +
             "           </tr>" +
             "       </thead>" +
-            "       <tbody class='assignmentPage table body'>" +
+            "       <tbody class='assignmentPage table body "+term.toString().toLowerCase()+courseID+"'>" +
             "           " +
             "       </tbody>" +
             "   </table>" +
-            "</div>"
-            , true);
+            "</div>");
+        this.dialog.OpenDialog();
+
+
 
         quarterAssignments.forEach((assignment) => {
-            let tbody = document.querySelector(".assignmentPage.table.body");
+            let tbody = document.querySelector(".assignmentPage.table.body."+term.toString().toLowerCase()+courseID);
             if (tbody){
                 tbody.innerHTML += "" +
                     "<tr>" +
@@ -58,8 +73,12 @@ export class GradePage{
 
             }
         });
-
-        dialog.GetHtmlDiv().style.width = "70vw";
+        this.dialog.GetHtmlDiv().style.paddingLeft = "10px";
+        this.dialog.GetHtmlDiv().style.paddingRight = "10px";
+        this.dialog.GetHtmlDiv().style.maxHeight = "90vh";
+        this.dialog.GetHtmlDiv().style.overflowY = "auto"
     }
+
+
 
 }
