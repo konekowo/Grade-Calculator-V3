@@ -2,7 +2,8 @@ import fs from "node:fs";
 import https from "https";
 import os from "os";
 import execFile from "child_process";
-
+import exec from "child_process";
+import * as path from "path";
 export class BrowserInstaller {
     public static isInstalled() {
         let promise = new Promise((resolve) => {
@@ -105,7 +106,16 @@ export class BrowserInstaller {
                                         }, 1000);
 
                                     } else if (os.type() == "Linux") {
-                                        // unzip to dir
+                                        // wait until zip is not busy
+                                        setTimeout(async () => {
+                                            const process = exec.exec("tar -xf ./browserInstallTemp/install.tar.bz2 -C ./browser/", (err, stdout, stderr) => {
+                                                if (err){
+                                                    throw new Error("Error when unzipping the firefox archive! Error: "+err);
+                                                }
+                                                console.log("Browser Installed!");
+                                                resolve("installed");
+                                            });
+                                        }, 1000);
                                     }
                                 });
                             });

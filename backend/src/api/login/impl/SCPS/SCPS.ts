@@ -5,6 +5,7 @@ import {ClientIDS} from "../../../../main";
 import request from "request";
 import {parse} from 'node-html-parser';
 import {JSDOM} from 'jsdom';
+import os from "os";
 
 export class SCPS extends Login {
     public async doLogin(clientID: string, StudentID: string, Password: string): Promise<any> {
@@ -13,12 +14,19 @@ export class SCPS extends Login {
             if (clientObj === null){
                 return Status.Failed;
             }
+            let execPath = "";
+            if (os.type() == "Linux"){
+                execPath = "./browser/firefox/firefox"
+            }
+            if (os.type() == "Windows_NT"){
+                execPath = "./browser/core/firefox.exe"
+            }
 
             clientObj.status = Status.LoggingIn;
             // Launch the browser and open a new blank page
             const browser = await puppeteer.launch({
                 headless: false,
-                executablePath: "./browser/core/firefox.exe",
+                executablePath: execPath,
                 product: "firefox",
                 protocol: "webDriverBiDi"
             });
