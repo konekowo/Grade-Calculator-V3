@@ -50,6 +50,12 @@ export class Dialog {
 
     public CloseDialog() {
         if (this.isOpened){
+            let buttons = this.dialogElem.getElementsByTagName("button");
+            if (buttons){
+                for (let i = 0; i < buttons.length; i++) {
+                    buttons[i].setAttribute("disabled", "");
+                }
+            }
             this.dialogElem.style.scale = "0.7";
             this.dialogElem.style.opacity = "0";
             setTimeout(()=> {

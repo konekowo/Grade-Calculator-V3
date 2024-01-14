@@ -6,8 +6,17 @@ import {GradePage} from "./GradePage";
 export class CoursePage {
     public constructor(schoolDistrictCode: string) {
         const page = document.createElement("div");
+        // @ts-ignore
+        window["resetCourses"] = () => {
+            StatusQuery.courseGrades = JSON.parse(JSON.stringify(StatusQuery.ogCourseGrades));
+            this.UpdateAllGrades(schoolDistrictCode);
+        }
         page.innerHTML = "" +
             "<div class='gradespage tableContainer'>" +
+            "<button class='button assignmentPageReset' onclick='window.resetCourses();' style=' width: 165px; padding-left: 0; margin-left: 10px; margin-bottom: 20px;'>" +
+            "   <img src='./reset.svg' alt='Reset Assignment' style='float: left; width: 25px;'> " +
+            "   <p class='text' style='float: right; transform: translateY(-1px);'>Reset All Assignments</p>" +
+            "</button>" +
             "   <table class ='gradespage table'>" +
             "      <thead>" +
             "        <tr>" +
@@ -29,7 +38,7 @@ export class CoursePage {
         for (let i = 0; i < StatusQuery.courseGrades.length; i++){
             // @ts-ignore
             document.querySelector(".gradespage.table.body").innerHTML += "" +
-                "<tr class='gradespage table course "+StatusQuery.courseGrades[i].courseID+"'><td>"+ StatusQuery.courseGrades[i].courseName +"</td>" +
+                "<tr class='gradespage table course"+StatusQuery.courseGrades[i].courseID+"'><td>"+ StatusQuery.courseGrades[i].courseName +"</td>" +
                     "<td class='gradespage table quarter q1'>"+
                         // @ts-ignore
                         Math.round(CalculatorManager[schoolDistrictCode].calculateQuarterGrade(StatusQuery.courseGrades, Quarter.Q1, StatusQuery.courseGrades[i].courseID))
@@ -41,8 +50,7 @@ export class CoursePage {
                     +
                     "</td>" +
                     "<td class='gradespage table quarter s1'>"+
-                    // @ts-ignore
-                    Math.round(CalculatorManager[schoolDistrictCode].calculateQuarterGrade(StatusQuery.courseGrades, Quarter.S1, StatusQuery.courseGrades[i].courseID))
+                    this.CalculateSemester(Quarter.S1, StatusQuery.courseGrades, StatusQuery.courseGrades[i].courseID, schoolDistrictCode)
                     +
                     "</td>" +
                     "<td class='gradespage table quarter q3'>"+
@@ -57,7 +65,7 @@ export class CoursePage {
                     "</td>" +
                     "<td class='gradespage table quarter s2'>"+
                     // @ts-ignore
-                    Math.round(CalculatorManager[schoolDistrictCode].calculateQuarterGrade(StatusQuery.courseGrades, Quarter.S2, StatusQuery.courseGrades[i].courseID))
+                    this.CalculateSemester(Quarter.S2, StatusQuery.courseGrades, StatusQuery.courseGrades[i].courseID, schoolDistrictCode)
                     +
                     "</td>" +
                 "</tr>";
@@ -77,7 +85,7 @@ export class CoursePage {
 
         document.querySelectorAll(".gradespage.table.quarter").forEach((elem) => {
             elem.addEventListener("click", () => {
-                if (elem.textContent != ""){
+                if (elem.textContent != "" && elem.classList[3] != "s1" && elem.classList[3] != "s2"){
                     let Term: Quarter;
                     let termUnparsed = elem.classList[3];
                     switch (termUnparsed){
@@ -101,10 +109,10 @@ export class CoursePage {
                             break;
                     }
                     // @ts-ignore
-                    let courseID = elem.parentElement.classList[3];
+                    let courseID = elem.parentElement.classList[2].split("course")[1];
                     // @ts-ignore
                     if (Term){
-                        new GradePage(Term, courseID);
+                        new GradePage(Term, courseID, schoolDistrictCode, this);
                     }
                     else {
                         throw new Error("Something wrong happened when parsing the TERM.")
@@ -114,5 +122,106 @@ export class CoursePage {
             });
         })
     }
+
+    public UpdateGrades(courseID:string, schoolDistrictCode: string, term: Quarter) {
+        let elem = document.querySelector(".gradespage.table.course"+courseID+" > .gradespage.table.quarter."+term.toString().toLowerCase());
+        if (elem){
+            // @ts-ignore
+            elem.textContent = Math.round(CalculatorManager[schoolDistrictCode].calculateQuarterGrade(StatusQuery.courseGrades, term, courseID));
+            if (term == Quarter.Q1 || term == Quarter.Q2){
+                let semesterElem = document.querySelector(".gradespage.table.course"+courseID+" > .gradespage.table.quarter."+Quarter.S1.toString().toLowerCase());
+                if (semesterElem){
+                    // @ts-ignore
+                    semesterElem.textContent = this.CalculateSemester(Quarter.S1, StatusQuery.courseGrades, courseID, schoolDistrictCode);
+                }
+            }
+            if (term == Quarter.Q3 || term == Quarter.Q4){
+                let semesterElem = document.querySelector(".gradespage.table.course"+courseID+" > .gradespage.table.quarter."+Quarter.S2.toString().toLowerCase());
+                if (semesterElem){
+                    // @ts-ignore
+                    semesterElem.textContent = this.CalculateSemester(Quarter.S2, StatusQuery.courseGrades, courseID, schoolDistrictCode);
+                }
+            }
+        }
+        else{
+            throw new Error("Table Element does not exist?!?");
+        }
+    }
+
+    public UpdateAllGrades(schoolDistrictCode: string) {
+        StatusQuery.courseGrades.forEach((course) => {
+            for (let quarter in Quarter) {
+                // @ts-ignore
+                let elem = document.querySelector(".gradespage.table.course"+course.courseID+" > .gradespage.table.quarter."+Quarter[quarter].toString().toLowerCase());
+                if (elem){
+                    // @ts-ignore
+                    if (Quarter[quarter] != Quarter.S1 || Quarter[quarter] != Quarter.S2){
+                        // @ts-ignore
+                        elem.textContent = Math.round(CalculatorManager[schoolDistrictCode].calculateQuarterGrade(StatusQuery.courseGrades, Quarter[quarter], course.courseID));
+                    }
+                    else {
+                        // @ts-ignore
+                        elem.textContent = this.CalculateSemester(Quarter[quarter], StatusQuery.courseGrades, course.courseID, schoolDistrictCode);
+                    }
+
+                }
+                else{
+                    throw new Error("Table Element does not exist?!?");
+                }
+            }
+
+        });
+
+        let elems = document.querySelectorAll(".gradespage.table.body > tr > td");
+        elems.forEach((elem) => {
+           if (elem.textContent == "NaN"){
+               elem.textContent = "";
+           }
+        });
+
+    }
+
+    private CalculateSemester(semester: Quarter, data: any[], courseID: string, schoolDistrictCode: string){
+        switch (semester){
+            case Quarter.Q1:
+                throw new Error("Quarters are NOT supposed to be used in this function!");
+            case Quarter.Q2:
+                throw new Error("Quarters are NOT supposed to be used in this function!");
+            case Quarter.Q3:
+                throw new Error("Quarters are NOT supposed to be used in this function!");
+            case Quarter.Q4:
+                throw new Error("Quarters are NOT supposed to be used in this function!");
+        }
+
+        if (semester == Quarter.S1){
+            // @ts-ignore
+            let q1 = CalculatorManager[schoolDistrictCode].calculateQuarterGrade(data, Quarter.Q1, courseID);
+            // @ts-ignore
+            let q2 = CalculatorManager[schoolDistrictCode].calculateQuarterGrade(data, Quarter.Q2, courseID);
+            if (isNaN(q1)){
+                return Math.round(q2);
+            }
+            if (isNaN(q2)){
+                return Math.round(q1);
+            }
+            return Math.round((q1+q2)/2);
+        }
+
+        if (semester == Quarter.S2){
+            // @ts-ignore
+            let q3 = CalculatorManager[schoolDistrictCode].calculateQuarterGrade(data, Quarter.Q3, courseID);
+            // @ts-ignore
+            let q4 = CalculatorManager[schoolDistrictCode].calculateQuarterGrade(data, Quarter.Q4, courseID);
+            if (isNaN(q3)){
+                return Math.round(q4);
+            }
+            if (isNaN(q4)){
+                return Math.round(q3);
+            }
+            return Math.round((q3+q4)/2);
+        }
+
+    }
+
 
 }

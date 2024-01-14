@@ -80,6 +80,7 @@ export class SCPSCalculator {
                     maxPoints += maxAssignmentPoints;
                 });
                 totalGrade = (points/maxPoints) * 100;
+                return (points/maxPoints) * 100;
             }
 
         }

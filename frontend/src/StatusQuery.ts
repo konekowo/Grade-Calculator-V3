@@ -6,6 +6,7 @@ export class StatusQuery {
     public static expires: number;
     public static status: string;
     public static courseGrades: any[];
+    public static ogCourseGrades: any[];
     public static errorMessage: string;
     public static screenshot: any;
     public static schoolCode: string;
@@ -72,6 +73,8 @@ export class StatusQuery {
         }
         if (response.courseGrades){
             this.courseGrades = response.courseGrades;
+            // make a copy of the object
+            this.ogCourseGrades = JSON.parse(JSON.stringify(response.courseGrades));
         }
         if (response.errorMessage){
             this.errorMessage = response.errorMessage;

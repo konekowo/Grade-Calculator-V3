@@ -23,6 +23,9 @@
         .text.header {
             font-size: 30px;
         }
+        .text.header2 {
+            font-size: 25px;
+        }
 
         select {
             width: 250px;
@@ -179,6 +182,60 @@
 
         .assignmentPage.closeButton:active {
             background-color: #bb5959;
+        }
+
+        .button {
+            border: 1px solid #3a3a3a;
+            background-color: gray;
+            border-radius: 3px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.2s background-color;
+        }
+        .button img {
+            -webkit-user-drag: none;
+        }
+
+        .button:hover {
+            background-color: #a8a8a8;
+        }
+
+        .button:active {
+            background-color: #444444;
+        }
+
+        .button.assignmentDelete {
+            background-color: #fd9d9d;
+        }
+        .button.assignmentDelete:hover {
+            background-color: #ffc3c3;
+        }
+        .button.assignmentDelete:active {
+            background-color: #c75050;
+        }
+
+
+        .button.assignmentPageAdd {
+            background-color: #3dd033;
+        }
+        .button.assignmentPageAdd:hover {
+            background-color: #95f688;
+        }
+        .button.assignmentPageAdd:active {
+            background-color: #216013;
+        }
+
+        .button.editAssignmentApply {
+            background-color: #3dd033;
+        }
+        .button.editAssignmentApply:hover {
+            background-color: #95f688;
+        }
+        .button.editAssignmentApply:active {
+            background-color: #216013;
         }
 
 
