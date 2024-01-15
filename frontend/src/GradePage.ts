@@ -149,7 +149,7 @@ export class GradePage{
                         "   <input type='text' class='assignmentPage table editAssignmentName' placeholder='Assignment Name' style='position: unset; transform: unset; float: left;'> <br><br>" +
                         "   <span class='text' style='font-size: 15px; float: left;'>Assignment Points:</span>" +
                         "   <input type='number' class='assignmentPage table editAssignmentGradeValue' placeholder='Points' style='position: unset; transform: unset; width: 100px; float: left;'>" +
-                        "   <span class='text' style='font-size: 15px;float: left;'>/</span>" +
+                        "   <span class='text' style='font-size: 25px;float: left;'>/</span>" +
                         "   <input type='number' class='assignmentPage table editAssignmentGradeMax' placeholder='Max Points' style='position: unset; transform: unset; width: 100px; float: left;'>" +
                         "   <br><br>" +
                         "   <span class='text' style='font-size: 15px; float: left;'>Assignment Type:</span>" +
