@@ -67,7 +67,7 @@ export class GradePage{
             "   <img src='./reset.svg' alt='Reset Assignment' style='float: left; width: 25px;'> " +
             "   <p class='text' style='float: right; transform: translateY(-1px);'>Reset Assignments</p>" +
             "</button>" +
-            "<button class='button assignmentPageAdd' onclick='window.replaceAssignment"+courseID + term.toString()+"();' style='float: right; width: 150px; padding-left: 0; margin-right: 10px; margin-bottom: 20px;'>" +
+            "<button class='button assignmentPageAdd' onclick='window.addAssignment"+courseID + term.toString()+"();' style='float: right; width: 150px; padding-left: 0; margin-right: 10px; margin-bottom: 20px;'>" +
             "   <img src='./add.svg' alt='Add Assignment' style='float: left; width: 25px; margin-right: 7px;'> " +
             "   <p class='text' style='float: right; transform: translateY(-1px);'>Add Assignment</p>" +
             "</button>" +
@@ -108,40 +108,89 @@ export class GradePage{
         }
         // @ts-ignore
         window["addAssignment" + courseID + term.toString()] = () => {
-            let firstWeight = "";
-            for (let weightsKey in this.weights) {
-                firstWeight = weightsKey;
-                break;
-            }
-            let date = new Date();
-            let dateStr = date.getMonth() + "/" + date.getDate() + "/" + (date.getFullYear() - 2000);
-            const newData = {
-                type: firstWeight,
-                date: dateStr,
-                points: "25/25",
-                latePolicyApplied: false,
-                name: "New Assignment"
-            }
-            let newQuarterAssignments = [];
-            newQuarterAssignments.push(newData);
-            this.quarterAssignments.forEach((quarterAssignment) => {
-               newQuarterAssignments.push(quarterAssignment);
-            });
-            this.quarterAssignments = newQuarterAssignments;
-            this.courseData[term.toString()] = this.quarterAssignments;
-            for (let y = 0; y < StatusQuery.courseGrades.length; y++){
-                if (StatusQuery.courseGrades[y].courseID == courseID){
-                    StatusQuery.courseGrades[y] = this.courseData;
+            let assignmentsElems = document.querySelector(".assignmentPage.table.body."+term.toString().toLowerCase()+courseID);
+            if (assignmentsElems){
+                let isAnyAssignmentInEditMode = false;
+                for (let n = 0; n < assignmentsElems.children.length; n++) {
+                    //@ts-ignore
+                    if (assignmentsElems.children[n].children[0].colSpan == "6"){
+                        isAnyAssignmentInEditMode = true;
+                    }
                 }
-            }
-            const assignmentID = this.createAssignment(newData, term, weightsOptionElems, courseID);
-            let assignment = document.querySelector(".assignmentPage.table.body"+term.toString().toLowerCase()+courseID+".assignment.id"+assignmentID);
-            if (assignment){
-                // @ts-ignore
-                let editButton: HTMLButtonElement = assignment.querySelector(".button.assignmentEdit");
-                if (editButton){
-                    editButton.click();
+                if (!isAnyAssignmentInEditMode){
+                    let firstWeight = "";
+                    for (let weightsKey in this.weights) {
+                        firstWeight = weightsKey;
+                        break;
+                    }
+                    let date = new Date();
+                    let day = "";
+                    let month = "";
+                    if (date.getDate() < 9){
+                        day = "0" + date.getDate();
+                    }
+                    else {
+                        day = date.getDate().toString();
+                    }
+                    if (date.getMonth() < 9){
+                        month = "0" + (date.getMonth() + 1);
+                    }
+                    else {
+                        month = (date.getMonth() + 1).toString();
+                    }
+                    let dateStr = month + "/" + day + "/" + (date.getFullYear() - 2000);
+                    const newData = {
+                        type: firstWeight,
+                        date: dateStr,
+                        points: "25/25",
+                        latePolicyApplied: false,
+                        name: "New Assignment"
+                    }
+                    let newQuarterAssignments = [];
+                    newQuarterAssignments.push(newData);
+                    this.quarterAssignments.forEach((quarterAssignment) => {
+                        newQuarterAssignments.push(quarterAssignment);
+                    });
+                    this.quarterAssignments = newQuarterAssignments;
+                    this.courseData[term.toString()] = this.quarterAssignments;
+                    for (let y = 0; y < StatusQuery.courseGrades.length; y++){
+                        if (StatusQuery.courseGrades[y].courseID == courseID){
+                            StatusQuery.courseGrades[y] = this.courseData;
+                        }
+                    }
+                    let assignmentsHTML = "";
+                    assignmentsHTML = assignmentsElems.innerHTML;
+                    assignmentsElems.innerHTML = "";
+
+                    const assignmentID = this.createAssignment(newData, term, weightsOptionElems, courseID);
+                    assignmentsElems.innerHTML += assignmentsHTML;
+
+                    let assignment = document.querySelector(".assignmentPage.table.body"+term.toString().toLowerCase()+courseID+".assignment.id"+assignmentID);
+                    if (assignment){
+                        // @ts-ignore
+                        let editButton: HTMLButtonElement = assignment.querySelector(".button.assignmentEdit");
+                        if (editButton){
+                            editButton.click();
+                        }
+                    }
                 }
+                else {
+                    let errorDialog =
+                        new DialogModal("" +
+                            "<h1 class='text header' style='margin-top: 5px; margin-bottom: 5px; margin-left: 10px;'>Error" +
+                            "</h1>" +
+                            "<hr style='margin-left: -10px; margin-right: -10px;'>" +
+                            "<p class='text' style='text-align: center;'>An assignment is in edit mode. Please either save or cancel your edits to that assignment first before creating a new one.</p>" +
+                            "<button class='button' style='color: white; margin: auto; width: 100px;'>Ok</button>"
+                        );
+                    errorDialog.GetHtmlDiv().style.paddingLeft = "10px";
+                    errorDialog.GetHtmlDiv().style.paddingRight = "10px";
+                    errorDialog.OpenDialog();
+                    errorDialog.GetHtmlDiv().getElementsByTagName("button")[0].addEventListener("click", () => {
+                       errorDialog.DestroyWithAnim();
+                    });
+                }
+
             }
         }
 
