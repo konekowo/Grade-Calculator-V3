@@ -126,13 +126,13 @@ export class GradePage{
                     let date = new Date();
                     let day = "";
                     let month = "";
-                    if (date.getDate() < 9){
+                    if (date.getDate() < 10){
                         day = "0" + date.getDate();
                     }
                     else {
                         day = date.getDate().toString();
                     }
-                    if (date.getMonth() < 9){
+                    if (date.getMonth() < 10){
                         month = "0" + (date.getMonth() + 1);
                     }
                     else {
@@ -240,7 +240,17 @@ export class GradePage{
     }
 
     private getEditAssignmentHTML(weightsOptionElems: string, term: Quarter, courseID: string, assignmentID: string){
-        return "<td colspan='6'>" +
+        let subDate = new Date();
+        let month: string | number = subDate.getMonth() +1;
+        if (month < 10){
+            month = "0" + month;
+        }
+        let day: string | number = subDate.getDate();
+        if (day < 10){
+            day = "0" + day;
+        }
+        return "" +
+        "<td colspan='6'>" +
         "   <span class='text' style='font-size: 15px; float: left;'>Assignment Name:</span>" +
         "   <input type='text' class='assignmentPage table editAssignmentName' placeholder='Assignment Name' style='position: unset; transform: unset; float: left;'> <br><br>" +
         "   <span class='text' style='font-size: 15px; float: left;'>Assignment Points:</span>" +
@@ -253,7 +263,7 @@ export class GradePage{
         "       "+weightsOptionElems+
         "   </select> <br><br>" +
         "   <span class='text' style='font-size: 15px; float: left;'>Assignment Due Date:</span>" +
-        "   <input type='date' class='assignmentPage table editAssignmentDate' placeholder='Assignment Name' style='position: unset; transform: unset; color-scheme: dark; float: left;'> <br><br>" +
+        "   <input type='date' class='assignmentPage table editAssignmentDate' placeholder='Assignment Due Date' style='position: unset; transform: unset; color-scheme: dark; float: left;'> <br><br>" +
         "   <hr>" +
         "   <span class='text'>Late policy (this will only apply if the assignment's due date is before the current date:</span><br><br>" +
         "   <label class='text' for='assignmentPageTableEditAssignmentDoLateGrade"+term.toString().toLowerCase()+courseID + assignmentID+"' style='font-size: 15px; float: left;'>Apply Late Policy (make sure the assignments due date is before today)?</label>" +
@@ -270,6 +280,8 @@ export class GradePage{
         "   <input type='checkbox' id='assignmentPageTableEditAssignmentLateGradeIncludeWeekends"+term.toString().toLowerCase()+courseID + assignmentID+"' class='assignmentPage table editAssignmentLateGradeIncludeWeekends' style='position: unset; width: 25px; float: left; transform: translateY(-10px);' checked> <br> <br>" +
         "   <label class='text' for='assignmentPageTableEditAssignmentLateGradeStartAfterDueDate"+term.toString().toLowerCase()+courseID + assignmentID+"' style='font-size: 15px; float: left;'>Start taking off % right after due date?</label>" +
         "   <input type='checkbox' id='assignmentPageTableEditAssignmentLateGradeStartAfterDueDate"+term.toString().toLowerCase()+courseID + assignmentID+"' class='assignmentPage table editAssignmentLateGradeStartAfterDueDate' style='position: unset; width: 25px; float: left; transform: translateY(-10px);'> <br> <br>" +
+        "   <span class='text' style='font-size: 15px; float: left;'>Submission Date:</span>" +
+        "   <input type='date' class='assignmentPage table editAssignmentSubDate' placeholder='Submission Date' style='position: unset; transform: unset; color-scheme: dark; float: left;' value='"+subDate.getFullYear() +"-"+ month + "-" + day +"'> <br><br>" +
         "   <hr>" +
         "   <h2 class='text header2' id='assignmentPageTableEditAssignmentPredictedGrade'>Predicted Total Grade (before Late Grade Policy is applied):</h2>" +
         "   <h2 class='text header2' id='assignmentPageTableEditAssignmentPredictedGradeLate'>Predicted Total Grade:</h2>" +
@@ -368,6 +380,10 @@ export class GradePage{
                     // @ts-ignore
                     assignment.querySelector(".assignmentPage.table.editAssignmentGradeMax").value =
                         quarterAssignment.latePolicyApplied.originalPoints.split("/")[1];
+
+                    // @ts-ignore
+                    assignment.querySelector(".assignmentPage.table.editAssignmentSubDate").value =
+                        quarterAssignment.latePolicyApplied.submissionDate;
                 }
 
                 let inputs = document.getElementsByTagName("input");
@@ -431,8 +447,10 @@ export class GradePage{
                         let includeWeekends = assignment.querySelector(".assignmentPage.table.editAssignmentLateGradeIncludeWeekends").checked;
                         // @ts-ignore
                         let startAfterDueDate = assignment.querySelector(".assignmentPage.table.editAssignmentLateGradeStartAfterDueDate").checked;
+                        // @ts-ignore
+                        let subDate = assignment.querySelector(".assignmentPage.table.editAssignmentSubDate").value;
 
-                        let currentDate = new Date();
+                        let currentDate = new Date(subDate);
                         let dueDate = new Date(month + '/' + day + '/' + + '20' + year);
                         // @ts-ignore
                         let dayDifference = Math.ceil((currentDate - dueDate) / (1000 * 60 * 60 * 24));
@@ -495,7 +513,8 @@ export class GradePage{
                                     lateGradeFrequency: lateGradeFrequency,
                                     startAfterDueDate: startAfterDueDate,
                                     includeWeekends: includeWeekends,
-                                    originalPoints: points
+                                    originalPoints: points,
+                                    submissionDate: subDate
                                 }
                             }
                             for (let j = 0; j < newQuarterAssignments.length; j++) {

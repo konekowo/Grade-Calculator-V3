@@ -13,11 +13,11 @@ export class CoursePage {
         }
         page.innerHTML = "" +
             "<div class='gradespage tableContainer'>" +
-            "<button class='button assignmentPageReset' onclick='window.resetCourses();' style=' width: 165px; padding-left: 0; margin-left: 10px; margin-bottom: 20px;'>" +
+            "<button class='button assignmentPageReset' onclick='window.resetCourses();' style=' width: 165px; padding-left: 0; margin: auto; margin-bottom: 15px; margin-top: 5px;'>" +
             "   <img src='./reset.svg' alt='Reset Assignment' style='float: left; width: 25px;'> " +
             "   <p class='text' style='float: right; transform: translateY(-1px);'>Reset All Assignments</p>" +
             "</button>" +
-            "   <table class ='gradespage table'>" +
+            "   <table class ='gradespage table' style='min-width: 75vw;'>" +
             "      <thead>" +
             "        <tr>" +
             "          <th>Course</th>" +
@@ -32,13 +32,37 @@ export class CoursePage {
             "      <tbody class='gradespage table body'>" +
             "      </tbody>" +
             "   </table>" +
-            "</div>"
+            "</div>" +
+            "<table>" +
+            "   <thead>" +
+            "       <th>GPA Type</th>" +
+            "       <th>GPA</th>" +
+            "       <th>Earned Credits</th>" +
+            "       <th>Failed Credits</th>" +
+            "   </thead>" +
+            "   <tbody>" +
+            "       <tr>" +
+            "           <td>Unweighted</td>" +
+            "           <td class='gpaTable gpa unweightedGPA'></td>" +
+            "           <td class='gpaTable earnedCredits unweighted'></td>" +
+            "           <td class='gpaTable failedCredits unweighted'></td>" +
+            "       </tr>" +
+            "       <tr>" +
+            "           <td>Weighted</td>" +
+            "           <td class='gpaTable gpa weightedGPA'></td>" +
+            "           <td class='gpaTable earnedCredits weighted'></td>" +
+            "           <td class='gpaTable failedCredits weighted'></td>" +
+            "       </tr>" +
+            "   </tbody>" +
+            "</table>"
         document.body.appendChild(page);
         page.style.color = "white";
         for (let i = 0; i < StatusQuery.courseGrades.length; i++){
             // @ts-ignore
             document.querySelector(".gradespage.table.body").innerHTML += "" +
-                "<tr class='gradespage table course"+StatusQuery.courseGrades[i].courseID+"'><td>"+ StatusQuery.courseGrades[i].courseName +"</td>" +
+            "<tr class='gradespage table course"+StatusQuery.courseGrades[i].courseID+"'>" +
+                "<td class='gradespage table courseName'>"+ StatusQuery.courseGrades[i].courseName +" <br>" +
+                "<span>Credits per semester:</span> <input type='number' class='courseCredit' placeholder='Credits per semester' value='0.5' style='width: 50px; position: unset; transform: unset; left: unset;'></td>" +
                     "<td class='gradespage table quarter q1'>"+
                         // @ts-ignore
                         Math.round(CalculatorManager[schoolDistrictCode].calculateQuarterGrade(StatusQuery.courseGrades, Quarter.Q1, StatusQuery.courseGrades[i].courseID))
@@ -146,6 +170,10 @@ export class CoursePage {
         else{
             throw new Error("Table Element does not exist?!?");
         }
+    }
+
+    public UpdateGPA(schoolDistrictCode: string) {
+
     }
 
     public UpdateAllGrades(schoolDistrictCode: string) {

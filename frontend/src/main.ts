@@ -6,7 +6,7 @@ import {CoursePage} from "./CoursePage";
 let loginDialog: Dialog;
 let statusDialog: Dialog;
 // this is for development use only!
-let useTestResponse: boolean = false;
+let useTestResponse: boolean = true;
 window.addEventListener("DOMContentLoaded", () => {
 
     let schoolDistrictNamesHTML = "";

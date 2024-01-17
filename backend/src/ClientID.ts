@@ -4,6 +4,7 @@ export class ClientID {
     public readonly clientID: string;
     public expires: number;
     public status: Status;
+    public studentName?: string;
     public courseGrades?: Course[];
     public errorMessage? : string;
     public screenshot? : any;

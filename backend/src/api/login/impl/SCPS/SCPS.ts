@@ -98,9 +98,18 @@ export class SCPS extends Login {
                             }
                         }
                         // @ts-ignore
-                        clientObj.status = Status.GrabbingGrades;
+                        clientObj.status = Status.FindingGrades;
                         request(options3, function (error, response, body) {
                             //console.log(body);
+                            const coursesPage = new JSDOM(body);
+                            let studentName = "";
+                            if (coursesPage.window.document.querySelector("#sf_StudentLabel")){
+                                // @ts-ignore
+                                studentName = coursesPage.window.document.querySelector("#sf_StudentLabel").textContent;
+                            }
+                            studentName = studentName.substring(1, studentName.length - 6);
+                            // @ts-ignore
+                            clientObj.studentName = studentName;
 
                             function getIndicesOf(searchStr: string, str: string, caseSensitive: boolean) {
                                 let searchStrLen = searchStr.length;
@@ -228,6 +237,8 @@ export class SCPS extends Login {
                                 }
 
                                 request(options4, function (error, response, body) {
+                                    // @ts-ignore
+                                    clientObj.status = Status.GrabbingGrades;
                                     if (error) throw new Error(error);
                                     let currentCourse = new Course();
                                     allCoursesParsed.forEach((course) => {
