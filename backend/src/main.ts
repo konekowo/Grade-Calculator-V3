@@ -6,6 +6,7 @@ import {ClientID, Status} from "./ClientID";
 import {BrowserInstaller} from "./BrowserInstaller";
 import os from "os";
 import bodyParser from "body-parser";
+import {Test} from "./test";
 
 if (os.type() == "Darwin"){
     throw new Error("macOS is currently not supported!")
@@ -130,7 +131,7 @@ app.use("/api/status/", (req: Request, res: Response) => {
 });
 
 
-
+new Test();
 
 
 
