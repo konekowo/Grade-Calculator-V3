@@ -1,0 +1,274 @@
+@font-face {
+    font-family: Torus;
+    src: url(./Torus.woff2);
+}
+
+body{
+    padding: 0;
+    margin: 0;
+    background-color: #16161f;
+}
+
+.text {
+    color: white;
+    font-family: Torus;
+}
+
+.text.link {
+    color: rgb(249, 183, 252);
+    transition: color 0.4s;
+}
+
+.text.link:hover {
+    color: rgb(254, 226, 255);
+}
+
+.text.link:active {
+    color: rgb(168, 99, 171);
+}
+
+.text.header {
+    font-size: 30px;
+}
+.text.header2 {
+    font-size: 25px;
+}
+
+select {
+    width: 250px;
+    height: 30px;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%);
+    text-align: center;
+    background-color: #232231;
+    color: white;
+    border: solid 1px rgb(128, 128, 128);
+    border-radius: 5px;
+}
+input {
+    width: 250px;
+    height: 30px;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%);
+    text-align: center;
+    background-color: #232231;
+    color: white;
+    border: solid 1px rgb(128, 128, 128);
+    border-radius: 5px;
+}
+
+#buttonLogin {
+    width: 100px;
+    height: 40px;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0px);
+    color: white;
+    background-color: #2FCB36FF;
+    border: solid 1px rgb(128, 128, 128);
+    border-radius: 5px;
+    transition: 0.3s background-color;
+}
+#buttonLogin:hover {
+    background-color: #6cff73;
+}
+#buttonLogin:active {
+    background-color: #298f2d;
+}
+
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+@-webkit-keyframes rotate {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+.load {
+    width: 40px;
+    height: 40px;
+    border:solid 5px #ffffff;
+    border-radius: 50%;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    -webkit-transition: all 0.5s ease-in;
+    -webkit-animation-name:             rotate;
+    -webkit-animation-duration:         1.0s;
+    -webkit-animation-iteration-count:  infinite;
+    -webkit-animation-timing-function: linear;
+
+    transition: all 0.5s ease-in;
+    animation-name:             rotate;
+    animation-duration:         1.0s;
+    animation-iteration-count:  infinite;
+    animation-timing-function: linear;
+}
+
+.gradespage.tableContainer{
+    margin-top: 10px;
+    max-height: 75vh;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+table {
+    font-family: 'Torus';
+    margin: auto;
+    font-size: 21px;
+}
+table,table th,table td {
+    border: 1px solid white;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+table th,table td{
+    padding: 10px;
+}
+
+table {
+    border-radius: 5px;
+}
+
+table > thead > tr > th:first-child, table > thead > tr{
+    border-top-left-radius: 5px;
+}
+
+table > thead > tr > th:last-child, table > thead > tr{
+    border-top-right-radius: 5px;
+}
+
+table > tr:last-child > td:last-child > tr:last-child{
+    border-bottom-right-radius: 5px;
+}
+table > tr:last-child > td:first-child > tr:last-child{
+    border-bottom-left-radius: 5px;
+}
+.gradespage.table.quarter {
+    text-align: center;
+    user-select: none;
+    transition: color 0.2s;
+}
+.gradespage.table.quarter:hover {
+    color: rgb(231, 185, 246);
+}
+.gradespage.table.quarter:active {
+    color: rgb(171, 115, 189);
+}
+.gradespage.table.quarter.s1:hover {
+    color: white;
+}
+.gradespage.table.quarter.s1:active {
+    color: white;
+}
+.gradespage.table.quarter.s2:hover {
+    color: white;
+}
+.gradespage.table.quarter.s2:active {
+    color: white;
+}
+
+.assignmentPage.closeButton {
+    background-color: #ff6e6e;
+    color: white;
+    float: right;
+    width: 40px;
+    height: 40px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+.assignmentPage.closeButton:hover {
+    background-color: #ffacac;
+}
+
+.assignmentPage.closeButton:active {
+    background-color: #bb5959;
+}
+
+.button {
+    border: 1px solid #3a3a3a;
+    background-color: gray;
+    border-radius: 3px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.2s background-color;
+}
+.button img {
+    -webkit-user-drag: none;
+}
+
+.button:hover {
+    background-color: #a8a8a8;
+}
+
+.button:active {
+    background-color: #444444;
+}
+
+.button.assignmentDelete {
+    background-color: #fd9d9d;
+}
+.button.assignmentDelete:hover {
+    background-color: #ffc3c3;
+}
+.button.assignmentDelete:active {
+    background-color: #c75050;
+}
+
+
+.button.assignmentPageAdd {
+    background-color: #3dd033;
+}
+.button.assignmentPageAdd:hover {
+    background-color: #95f688;
+}
+.button.assignmentPageAdd:active {
+    background-color: #216013;
+}
+
+.button.editAssignmentApply {
+    background-color: #3dd033;
+}
+.button.editAssignmentApply:hover {
+    background-color: #95f688;
+}
+.button.editAssignmentApply:active {
+    background-color: #216013;
+}
+
+nav > a:first-child {
+    font-weight: bold;
+}
+nav > a {
+    transform: translateY(-2.5px);
+    margin-left: 5px;
+    margin-right: 5px;
+}
+nav {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+.navContainer {
+    padding: 5px 10px;
+    background-color: #232231;
+}

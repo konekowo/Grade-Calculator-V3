@@ -2,6 +2,7 @@ import {StatusQuery} from "./StatusQuery";
 import {CalculatorManager} from "./Calculator/CalculatorManager";
 import {Quarter} from "./Quarter";
 import {GradePage} from "./GradePage";
+import gpa from "./gpa.json";
 
 export class CoursePage {
     public constructor(schoolDistrictCode: string) {
@@ -36,22 +37,19 @@ export class CoursePage {
             "<table>" +
             "   <thead>" +
             "       <th>GPA Type</th>" +
-            "       <th>GPA</th>" +
+            "       <th>GPA (Estimated, may not be accurate)</th>" +
             "       <th>Earned Credits</th>" +
-            "       <th>Failed Credits</th>" +
             "   </thead>" +
             "   <tbody>" +
             "       <tr>" +
             "           <td>Unweighted</td>" +
             "           <td class='gpaTable gpa unweightedGPA'></td>" +
             "           <td class='gpaTable earnedCredits unweighted'></td>" +
-            "           <td class='gpaTable failedCredits unweighted'></td>" +
             "       </tr>" +
             "       <tr>" +
             "           <td>Weighted</td>" +
             "           <td class='gpaTable gpa weightedGPA'></td>" +
             "           <td class='gpaTable earnedCredits weighted'></td>" +
-            "           <td class='gpaTable failedCredits weighted'></td>" +
             "       </tr>" +
             "   </tbody>" +
             "</table>"
@@ -106,6 +104,7 @@ export class CoursePage {
         // @ts-ignore
         document.querySelector(".gradespage.table.body").innerHTML = nanFree;
 
+        this.UpdateGPA(schoolDistrictCode);
 
         document.querySelectorAll(".gradespage.table.quarter").forEach((elem) => {
             elem.addEventListener("click", () => {
@@ -170,10 +169,79 @@ export class CoursePage {
         else{
             throw new Error("Table Element does not exist?!?");
         }
+        this.UpdateGPA(schoolDistrictCode);
     }
 
     public UpdateGPA(schoolDistrictCode: string) {
+        class CourseCredits {
+            public credits: number;
+            public courseID: string;
+            public constructor(credits: number, courseID:string) {
+                this.credits = credits;
+                this.courseID = courseID;
+            }
 
+        }
+        let courseCredits: CourseCredits[] = [];
+        let courseCreditElems = document.querySelectorAll(".courseCredit");
+        courseCreditElems.forEach((courseCreditElem) => {
+            // @ts-ignore
+            courseCredits.push(new CourseCredits(parseFloat(courseCreditElem.value), courseCreditElem.parentElement.parentElement.classList[2].split("course")[1]));
+        });
+
+        let totalEarnedCredits = 0;
+        let unweightedGPAS: number[] = [];
+        courseCredits.forEach((courseCredit) => {
+            let gradeS1 = this.CalculateSemester(Quarter.S1, StatusQuery.courseGrades, courseCredit.courseID, schoolDistrictCode);
+            if (gradeS1 > 59 && !isNaN(gradeS1)){
+                totalEarnedCredits += courseCredit.credits;
+            }
+            let gradeS2 = this.CalculateSemester(Quarter.S2, StatusQuery.courseGrades, courseCredit.courseID, schoolDistrictCode);
+            if (gradeS2 > 59 && !isNaN(gradeS2)){
+                totalEarnedCredits += courseCredit.credits;
+            }
+            let final = this.CalculateFinal(StatusQuery.courseGrades, courseCredit.courseID, schoolDistrictCode);
+            let unweightedGPA = 0;
+            for (let i = gpa.unweighted.length - 1; i > -1; i--) {
+                if (final > gpa.unweighted[i][0]){
+                    unweightedGPA = gpa.unweighted[i][1];
+                }
+            }
+            unweightedGPAS.push(unweightedGPA);
+
+        });
+        let unweightedGPA = 0;
+        unweightedGPAS.forEach((unweightedgpa) => {
+            unweightedGPA += unweightedgpa;
+        })
+        unweightedGPA /= unweightedGPAS.length;
+        unweightedGPA = Math.round(unweightedGPA*1000)/1000
+
+
+        // @ts-ignore
+        document.querySelector(".gpaTable.earnedCredits.weighted").textContent = totalEarnedCredits;
+        // @ts-ignore
+        document.querySelector(".gpaTable.earnedCredits.unweighted").textContent = totalEarnedCredits;
+        // @ts-ignore
+        document.querySelector(".gpaTable.gpa.unweightedGPA").textContent = unweightedGPA;
+
+
+
+    }
+
+    private CalculateFinal(data: any[], courseID: string, schoolDistrictCode: string){
+        let s1 = this.CalculateSemester(Quarter.S1, data, courseID, schoolDistrictCode);
+        let s2 = this.CalculateSemester(Quarter.S2, data, courseID, schoolDistrictCode);
+        if (isNaN(s1) && isNaN(s2)){
+            return NaN;
+        }
+        if (isNaN(s1)){
+            return s2;
+        }
+        if (isNaN(s2)){
+            return s1;
+        }
+        return Math.round((s1 + s2)/2);
     }
 
     public UpdateAllGrades(schoolDistrictCode: string) {
@@ -207,6 +275,8 @@ export class CoursePage {
            }
         });
 
+        this.UpdateGPA(schoolDistrictCode);
+
     }
 
     private CalculateSemester(semester: Quarter, data: any[], courseID: string, schoolDistrictCode: string){
@@ -226,6 +296,9 @@ export class CoursePage {
             let q1 = CalculatorManager[schoolDistrictCode].calculateQuarterGrade(data, Quarter.Q1, courseID);
             // @ts-ignore
             let q2 = CalculatorManager[schoolDistrictCode].calculateQuarterGrade(data, Quarter.Q2, courseID);
+            if (isNaN(q1) && isNaN(q2)){
+                return NaN
+            }
             if (isNaN(q1)){
                 return Math.round(q2);
             }
@@ -240,6 +313,9 @@ export class CoursePage {
             let q3 = CalculatorManager[schoolDistrictCode].calculateQuarterGrade(data, Quarter.Q3, courseID);
             // @ts-ignore
             let q4 = CalculatorManager[schoolDistrictCode].calculateQuarterGrade(data, Quarter.Q4, courseID);
+            if (isNaN(q3) && isNaN(q4)){
+                return NaN
+            }
             if (isNaN(q3)){
                 return Math.round(q4);
             }
@@ -248,6 +324,8 @@ export class CoursePage {
             }
             return Math.round((q3+q4)/2);
         }
+
+        return NaN;
 
     }
 
