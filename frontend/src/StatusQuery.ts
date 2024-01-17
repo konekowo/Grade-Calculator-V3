@@ -11,8 +11,8 @@ export class StatusQuery {
     public static screenshot: any;
     public static schoolCode: string;
 
-    public static registerQueryInterval(clientID: string, statusDialog: Dialog, schoolDistrictCode: string, onFinishedCallback?: (schoolDistrictCode: string) => void){
-        this.query(clientID, statusDialog);
+    public static registerQueryInterval(clientID: string, statusDialog: Dialog, loginDialog: Dialog, schoolDistrictCode: string, onFinishedCallback?: (schoolDistrictCode: string) => void){
+        this.query(clientID, statusDialog, loginDialog);
         let interval = setInterval(()=> {
             if (this.status == "Success" || this.status == "Failed"){
                 clearInterval(interval);
@@ -25,17 +25,17 @@ export class StatusQuery {
                     clearInterval(interval);
                 }
             }
-            this.query(clientID, statusDialog);
+            this.query(clientID, statusDialog, loginDialog);
 
 
         }, 2000);
     }
 
-    public static useTestResponse(statusDialog: Dialog) {
-        this.parse(testResponse, statusDialog);
+    public static useTestResponse(statusDialog: Dialog, loginDialog: Dialog) {
+        this.parse(testResponse, statusDialog, loginDialog);
     }
 
-    private static query(clientID: string, statusDialog: Dialog) {
+    private static query(clientID: string, statusDialog: Dialog, loginDialog: Dialog) {
         const options = {
             method: 'POST',
             headers: {
@@ -56,12 +56,12 @@ export class StatusQuery {
                 }
             })
             .then(response => {
-                this.parse(response, statusDialog);
+                this.parse(response, statusDialog, loginDialog);
             })
             .catch(err => console.error(err));
     }
 
-    private static parse(response: any, statusDialog: Dialog) {
+    private static parse(response: any, statusDialog: Dialog, loginDialog: Dialog) {
         if (response.clientID){
             this.clientID = response.clientID;
         }
@@ -85,6 +85,16 @@ export class StatusQuery {
         if (response.schoolCode){
             this.schoolCode = response.schoolCode;
         }
+
+        if (this.status == "Failed"){
+            // @ts-ignore
+            document.querySelector("#loginErrorMsg").innerText = this.errorMessage;
+            statusDialog.CloseDialog();
+            loginDialog.OpenDialog();
+            // @ts-ignore
+            document.querySelector("#buttonLogin").removeAttribute("disabled");
+        }
+
         // @ts-ignore
         statusDialog.GetHtmlDiv().querySelector(".statusDialog.status").innerText = response.status;
     }

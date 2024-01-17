@@ -89,7 +89,7 @@ window.onClickLogin = () => {
             })
             .then(response => {
                 if (response.clientID) {
-                    StatusQuery.registerQueryInterval(response.clientID, statusDialog, schoolDistrict, finishedCallback);
+                    StatusQuery.registerQueryInterval(response.clientID, statusDialog, loginDialog, schoolDistrict, finishedCallback);
                 } else {
                     if (response == "Error: One or more parameters were not set.") {
                         // @ts-ignore
@@ -119,7 +119,7 @@ window.onClickLogin = () => {
             });
     }
     else {
-        StatusQuery.useTestResponse(statusDialog);
+        StatusQuery.useTestResponse(statusDialog, loginDialog);
         finishedCallback(schoolDistrict);
     }
 

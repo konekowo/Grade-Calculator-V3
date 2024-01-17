@@ -1,12 +1,9 @@
 import {Course, Grade, Login} from "../../login";
-import puppeteer from "puppeteer";
 import {Status} from "../../../../ClientID";
 import {ClientIDS} from "../../../../main";
 import request from "request";
 import {parse} from 'node-html-parser';
 import {JSDOM} from 'jsdom';
-import os from "os";
-import * as jsDom from "jsdom";
 
 export class SCPS extends Login {
     public async doLogin(clientID: string, StudentID: string, Password: string): Promise<any> {
@@ -45,6 +42,14 @@ export class SCPS extends Login {
             request(options, (error, response, body) => {
                 if (error) throw new Error(error);
                 let parsed: string[] = [];
+                if (body.toString().includes("We are unable to validate the information entered.")){
+                    // @ts-ignore
+                    clientObj.status = Status.Failed;
+                    // @ts-ignore
+                    clientObj.errorMessage = "Incorrect StudentID or Password.";
+                    resolve(Status.Failed);
+                    return;
+                }
                 body.split("<li>")[1].split("</li>")[0].split("^").forEach((str: string) => {parsed.push(str);});
                 let session = parsed[1] + "" + parsed[2];
                 const options2 = {
@@ -95,9 +100,88 @@ export class SCPS extends Login {
                         // @ts-ignore
                         clientObj.status = Status.GrabbingGrades;
                         request(options3, function (error, response, body) {
+                            //console.log(body);
 
+                            function getIndicesOf(searchStr: string, str: string, caseSensitive: boolean) {
+                                let searchStrLen = searchStr.length;
+                                if (searchStrLen == 0) {
+                                    return [];
+                                }
+                                let startIndex = 0, index, indices = [];
+                                if (!caseSensitive) {
+                                    str = str.toLowerCase();
+                                    searchStr = searchStr.toLowerCase();
+                                }
+                                while ((index = str.indexOf(searchStr, startIndex)) > -1) {
+                                    indices.push(index);
+                                    startIndex = index + searchStrLen;
+                                }
+                                return indices;
+                            }
 
-                            /*
+                            let indices = getIndicesOf("data-bkt='", body, true);
+                            let elems:string [] = []
+                            indices.forEach((h) => {
+                                let reachedLeftAngleBracket = false;
+                                let leftAngleBracketI = h;
+                                let reachedRightAngleBracket = false;
+                                let rightAngleBracketI = h;
+                                while (!reachedLeftAngleBracket){
+                                    leftAngleBracketI--;
+                                    if (body[leftAngleBracketI] == "<"){
+                                        reachedLeftAngleBracket = true;
+                                    }
+                                }
+                                while (!reachedRightAngleBracket){
+                                    rightAngleBracketI++;
+                                    if (body[rightAngleBracketI] == ">"){
+                                        reachedRightAngleBracket = true;
+                                    }
+                                }
+                                rightAngleBracketI += 1;
+
+                                let elemType = "";
+                                let reachedSpace = false;
+                                let spaceI = 0;
+                                while (!reachedSpace){
+                                    spaceI++;
+                                    elemType+=body[leftAngleBracketI+spaceI];
+                                    if (body[leftAngleBracketI+spaceI] == " "){
+                                        reachedSpace = true;
+                                    }
+                                }
+
+                                //console.log(body.substring(leftAngleBracketI, rightAngleBracketI) + "</"+elemType+">");
+                                elems.push(body.substring(leftAngleBracketI, rightAngleBracketI) + "</"+elemType+">");
+                            });
+
+                            class Data {
+                                public stuId: string | null = null;
+                                public entityId: string | null = null;
+                                public corNumId: string | null = null;
+                                public gbId: string | null = null;
+                                public bucket: string | null = null;
+                                public empty: boolean | null = null;
+                            }
+
+                            let courseData: Data[] = [];
+
+                            elems.forEach((elem) => {
+                               let elemDom = new JSDOM(elem);
+                               let elemHTML = elemDom.window.document.body.children[0];
+                               if (elemHTML){
+                                   if (!elemHTML.classList.contains("emptyGrade")){
+                                       let data = new Data();
+                                       data.stuId = elemHTML.getAttribute("data-sid");
+                                       data.entityId = elemHTML.getAttribute("data-eid");
+                                       data.corNumId = elemHTML.getAttribute("data-cni");
+                                       data.gbId = elemHTML.getAttribute("data-gid");
+                                       data.bucket = elemHTML.getAttribute("data-bkt");
+                                       data.empty = elemHTML.classList.contains("emptyGrade");
+                                       courseData.push(data);
+                                   }
+                               }
+                            });
 
                             let allCoursesParsed: Course[] = [];
                             let requestCount = 0;
@@ -120,8 +204,6 @@ export class SCPS extends Login {
 
                             for (let i = 0; i < courseData.length; i++) {
 
-                                let sessionId = sessionIdElement.getAttribute("value");
-                                let encses = encsesElement.getAttribute("value");
                                 const options4 = {
                                     method: 'POST',
                                     url: 'https://skyward.scps.k12.fl.us/scripts/wsisa.dll/WService=wsEAplus/httploader.p?file=sfgradebook001.w',
@@ -153,7 +235,7 @@ export class SCPS extends Login {
                                             currentCourse = course;
                                         }
                                     });
-                                    console.log("Course ID: "+options4.form.corNumId);
+                                    //console.log("Course ID: "+options4.form.corNumId);
                                     let gradesPage = new JSDOM(body);
                                     // @ts-ignore
                                     let courseName = gradesPage.window.document.querySelector(".gb_heading").children[0].children[0].textContent;
@@ -259,9 +341,6 @@ export class SCPS extends Login {
                                 });
 
                             }
-
-
-                             */
                         });
 
                     }
