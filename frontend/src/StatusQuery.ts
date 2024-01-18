@@ -1,5 +1,7 @@
 import {Dialog} from "./Dialog";
 import testResponse from "./test.json";
+import config from "../../config.json"
+import * as path from "path";
 
 export class StatusQuery {
     public static clientID: string;
@@ -44,8 +46,11 @@ export class StatusQuery {
             },
             body: new URLSearchParams({clientid: clientID})
         };
+        let backendLink = config.backendLink;
+        if (backendLink.endsWith("/"))
+            backendLink = backendLink.substring(0, backendLink.length - 1);
 
-        fetch('http://localhost:9090/api/status', options)
+        fetch(backendLink + "/api/status/", options)
             .then(async response => {
                 let textResponse = await response.text();
                 if (!textResponse.startsWith("Error:")) {

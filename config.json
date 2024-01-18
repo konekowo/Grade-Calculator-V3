@@ -1,5 +1,7 @@
 {
   "backendPort": 9090,
+  "version": "3.0.0",
+  "release": "Beta",
   "SchoolDistricts": [
     {
       "code": "SCPS",
@@ -29,5 +31,6 @@
       }
     }
   ],
+  "backendLink": "http://localhost:9090/",
   "backendMaxActiveRequests": 4
 }

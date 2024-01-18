@@ -2,12 +2,15 @@ import {Dialog} from "./Dialog";
 import config from "../../config.json";
 import {StatusQuery} from "./StatusQuery";
 import {CoursePage} from "./CoursePage";
+import path from "path";
 
 let loginDialog: Dialog;
 let statusDialog: Dialog;
 // this is for development use only!
 let useTestResponse: boolean = false;
 window.addEventListener("DOMContentLoaded", () => {
+    // @ts-ignore
+    document.querySelector("#versionNum").textContent = "v" + config.version + " " + config.release;
 
     let schoolDistrictNamesHTML = "";
 
@@ -29,10 +32,15 @@ window.addEventListener("DOMContentLoaded", () => {
         "<br>" +
         "<p class='text' style='text-align: center; color: rgb(255,194,194);' id='loginErrorMsg'></p>" +
         "<div style='width: 50%; margin: auto;'>" +
-        "<p class='text' style='text-align: center'>Your Login information is sent to our server and then directly sent to your school district's login server. " +
+        "<p class='text' style='text-align: center; font-size: 13px;'>Your Login information is sent to our server and then directly sent to your school district's login server. " +
         "Your login information is NEVER stored on the server (but is stored in the server's RAM, due to how computers work). <br>" +
         "Don't beleive us? <br> The code for this grade calcultor (both server AND client) is <a class='text link' href='https://github.com/konekowo/Grade-Calculator-V3/' target='_blank'>open source.</a></p>" +
+        "<p class='text' style='text-align: center; font-size: 13px;'>Also, this web-app is completely free with no ads (which means I'm not making a single cent from this), so you should donate :)" +
+        "<br>" +
+        "You can do so here:" +
+        "</p>" +
         "</div>" +
+        "<a href=\"https://www.buymeacoffee.com/konekowo\" target='_blank' style='display: flex; justify-content: center;'><img src=\"https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=konekowo&button_colour=BD5FFF&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00\" /></a>" +
         "<padding style='opacity: 0; width: 100%; height: 10px; display: block;'></padding>" +
         "<button id='buttonLogin' onclick='window.onClickLogin()'>Login</button>",
         true
@@ -76,8 +84,11 @@ window.onClickLogin = () => {
                 schooldistrictcode: schoolDistrict
             })
         };
+        let backendLink = config.backendLink;
+        if (backendLink.endsWith("/"))
+            backendLink = backendLink.substring(0, backendLink.length - 1);
 
-        fetch('http://localhost:9090/api/login', options)
+        fetch(backendLink + "/api/login/", options)
             .then(async response => {
                 let textResponse = await response.text();
                 if (!textResponse.startsWith("Error:")) {
