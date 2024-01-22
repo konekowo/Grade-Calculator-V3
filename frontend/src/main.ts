@@ -15,7 +15,7 @@ window.addEventListener("DOMContentLoaded", () => {
     let schoolDistrictNamesHTML = "";
 
     for (let i = 0; i < config.SchoolDistricts.length; i++){
-        schoolDistrictNamesHTML += ("<option>" + config.SchoolDistricts[i].name + "</option>");
+        schoolDistrictNamesHTML += ("<option value='"+config.SchoolDistricts[i].code+"'>" + config.SchoolDistricts[i].name + "</option>");
     }
 
     loginDialog = new Dialog("" +
@@ -47,6 +47,16 @@ window.addEventListener("DOMContentLoaded", () => {
     );
 
 
+    let defaultSchoolDistrict = window.localStorage.getItem("defaultSchoolDistrict");
+    let schoolDistrictElem = document.querySelector('#schoolDistrict');
+    if (defaultSchoolDistrict){
+        if (schoolDistrictElem){
+            //@ts-ignore
+            schoolDistrictElem.value = defaultSchoolDistrict;
+        }
+    }
+
+
 });
 
 // @ts-ignore
@@ -58,12 +68,7 @@ window.onClickLogin = () => {
     // @ts-ignore
     let passwordInput: string = document.querySelector('#passwordInput').value;
 
-    // Convert district name into district code
-    config.SchoolDistricts.forEach((obj) => {
-        if (obj.name == schoolDistrict){
-            schoolDistrict = obj.code;
-        }
-    });
+    window.localStorage.setItem("defaultSchoolDistrict", schoolDistrict);
 
     if (statusDialog){
         statusDialog.Destroy();

@@ -59,8 +59,10 @@ export class SCPSCalculator {
             weights[key]["assignments"].forEach((grade:any) => {
                 let assignmentPoints = parseFloat(grade.points.split("/")[0]);
                 let maxAssignmentPoints = parseFloat(grade.points.split("/")[1]);
-                points += assignmentPoints;
-                maxPoints += maxAssignmentPoints;
+                if (grade.points.split("/")[0] !=  "*"){
+                    points += assignmentPoints;
+                    maxPoints += maxAssignmentPoints;
+                }
             });
             // @ts-ignore
             if (!weights[key]["assignments"].length == 0){
@@ -76,8 +78,10 @@ export class SCPSCalculator {
                 weights[otherKey]["assignments"].forEach((grade:any) => {
                     let assignmentPoints = parseFloat(grade.points.split("/")[0]);
                     let maxAssignmentPoints = parseFloat(grade.points.split("/")[1]);
-                    points += assignmentPoints;
-                    maxPoints += maxAssignmentPoints;
+                    if (grade.points.split("/")[0] !=  "*"){
+                        points += assignmentPoints;
+                        maxPoints += maxAssignmentPoints;
+                    }
                 });
                 totalGrade = (points/maxPoints) * 100;
                 return (points/maxPoints) * 100;

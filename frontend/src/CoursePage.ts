@@ -106,6 +106,14 @@ export class CoursePage {
 
         this.UpdateGPA(schoolDistrictCode);
 
+
+        let courseCreditElems = document.querySelectorAll(".courseCredit");
+        courseCreditElems.forEach((elem) => {
+           elem.addEventListener("input", () => {
+               this.UpdateGPA(schoolDistrictCode);
+           })
+        });
+
         document.querySelectorAll(".gradespage.table.quarter").forEach((elem) => {
             elem.addEventListener("click", () => {
                 if (elem.textContent != "" && elem.classList[3] != "s1" && elem.classList[3] != "s2"){
@@ -210,13 +218,33 @@ export class CoursePage {
             unweightedGPAS.push(unweightedGPA);
 
         });
+
+        let weightedGPAS: number[] = [];
+        courseCredits.forEach((courseCredit) => {
+            let final = this.CalculateFinal(StatusQuery.courseGrades, courseCredit.courseID, schoolDistrictCode);
+            let weightedGPA = 0;
+            for (let i = gpa.weighted.ap_or_honors.length - 1; i > -1; i--) {
+                if (final > gpa.weighted.ap_or_honors[i][0]){
+                    weightedGPA = gpa.weighted.ap_or_honors[i][1];
+                }
+            }
+            weightedGPAS.push(weightedGPA);
+
+        });
+
         let unweightedGPA = 0;
         unweightedGPAS.forEach((unweightedgpa) => {
             unweightedGPA += unweightedgpa;
         })
+        let weightedGPA = 0;
+        weightedGPAS.forEach((weightedgpa) => {
+            weightedGPA += weightedgpa;
+        })
+        weightedGPA /= weightedGPAS.length;
+        weightedGPA = Math.round(weightedGPA*1000)/1000;
         unweightedGPA /= unweightedGPAS.length;
-        unweightedGPA = Math.round(unweightedGPA*1000)/1000
-
+        unweightedGPA += 0.1;
+        unweightedGPA = Math.round(unweightedGPA*1000)/1000;
 
         // @ts-ignore
         document.querySelector(".gpaTable.earnedCredits.weighted").textContent = totalEarnedCredits;
@@ -224,7 +252,8 @@ export class CoursePage {
         document.querySelector(".gpaTable.earnedCredits.unweighted").textContent = totalEarnedCredits;
         // @ts-ignore
         document.querySelector(".gpaTable.gpa.unweightedGPA").textContent = unweightedGPA;
-
+        // @ts-ignore
+        document.querySelector(".gpaTable.gpa.weightedGPA").innerHTML = weightedGPA + " <span class='text' style='color: rgb(253,248,154);'>(this can be off by ~0.1 point or more)</span>";
 
 
     }
