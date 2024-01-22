@@ -12,24 +12,24 @@ export class StatusQuery {
     public static errorMessage: string;
     public static screenshot: any;
     public static schoolCode: string;
+    public static studentName: string;
 
     public static registerQueryInterval(clientID: string, statusDialog: Dialog, loginDialog: Dialog, schoolDistrictCode: string, onFinishedCallback?: (schoolDistrictCode: string) => void){
         this.query(clientID, statusDialog, loginDialog);
         let interval = setInterval(()=> {
+            if (this.expires){
+                if (Date.now() > this.expires){
+                    clearInterval(interval);
+                    return;
+                }
+            }
+            this.query(clientID, statusDialog, loginDialog);
             if (this.status == "Success" || this.status == "Failed"){
                 clearInterval(interval);
                 if (onFinishedCallback)
                     onFinishedCallback(schoolDistrictCode);
                 return;
             }
-            if (this.expires){
-                if (Date.now() > this.expires){
-                    clearInterval(interval);
-                }
-            }
-            this.query(clientID, statusDialog, loginDialog);
-
-
         }, 2000);
     }
 
@@ -90,7 +90,9 @@ export class StatusQuery {
         if (response.schoolCode){
             this.schoolCode = response.schoolCode;
         }
-
+        if (response.studentName){
+            this.studentName = response.studentName;
+        }
         if (this.status == "Failed"){
             // @ts-ignore
             document.querySelector("#loginErrorMsg").innerText = this.errorMessage;

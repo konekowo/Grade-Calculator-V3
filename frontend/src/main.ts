@@ -157,6 +157,8 @@ function finishedCallback(schoolDistrict: string) {
     if (StatusQuery.status == "Success"){
         statusDialog.DestroyWithAnim();
         new CoursePage(schoolDistrict);
+        // @ts-ignore
+        document.querySelector("#userText").textContent = "Welcome, " + StatusQuery.studentName;
     }
 
 }
