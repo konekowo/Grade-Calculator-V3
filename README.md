@@ -1,6 +1,6 @@
 # Grade Calculator V3
 
-A full stack web-app that lets you calculate your final score and GPA with "what-if" grades that you put in without having to put in all of your previous grades.
+A full stack web-app made in Vanilla TypeScript that lets you calculate your final score and GPA with "what-if" grades that you put in without having to put in all of your previous grades.
 
 #### If you would like to support this project, you can donate to my Buy Me A Coffee page here:
 <a href="https://www.buymeacoffee.com/konekowo" target='_blank'><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=konekowo&button_colour=BD5FFF&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" /></a>
