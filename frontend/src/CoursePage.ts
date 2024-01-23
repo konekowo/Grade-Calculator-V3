@@ -245,6 +245,9 @@ export class CoursePage {
         unweightedGPA /= unweightedGPAS.length;
         unweightedGPA += 0.1;
         unweightedGPA = Math.round(unweightedGPA*1000)/1000;
+        if (unweightedGPA > 4.0){
+            unweightedGPA = 4.0;
+        }
 
         // @ts-ignore
         document.querySelector(".gpaTable.earnedCredits.weighted").textContent = totalEarnedCredits;

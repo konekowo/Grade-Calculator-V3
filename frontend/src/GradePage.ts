@@ -278,10 +278,12 @@ export class GradePage{
         "   </select> <br><br>" +
         "   <label class='text' for='assignmentPageTableEditAssignmentLateGradeIncludeWeekends"+term.toString().toLowerCase()+courseID + assignmentID+"' style='font-size: 15px; float: left;'>Include Weekends when taking off late grade %?</label>" +
         "   <input type='checkbox' id='assignmentPageTableEditAssignmentLateGradeIncludeWeekends"+term.toString().toLowerCase()+courseID + assignmentID+"' class='assignmentPage table editAssignmentLateGradeIncludeWeekends' style='position: unset; width: 25px; float: left; transform: translateY(-10px);' checked> <br> <br>" +
-        "   <label class='text' for='assignmentPageTableEditAssignmentLateGradeStartAfterDueDate"+term.toString().toLowerCase()+courseID + assignmentID+"' style='font-size: 15px; float: left;'>Start taking off % right after due date?</label>" +
+        "   <label class='text' for='assignmentPageTableEditAssignmentLateGradeStartAfterDueDate"+term.toString().toLowerCase()+courseID + assignmentID+"' style='font-size: 15px; float: left;'>Start taking off % from the due date (enable this if assignment is not due at midnight or is due before the current time)?</label>" +
         "   <input type='checkbox' id='assignmentPageTableEditAssignmentLateGradeStartAfterDueDate"+term.toString().toLowerCase()+courseID + assignmentID+"' class='assignmentPage table editAssignmentLateGradeStartAfterDueDate' style='position: unset; width: 25px; float: left; transform: translateY(-10px);'> <br> <br>" +
         "   <span class='text' style='font-size: 15px; float: left;'>Submission Date:</span>" +
         "   <input type='date' class='assignmentPage table editAssignmentSubDate' placeholder='Submission Date' style='position: unset; transform: unset; color-scheme: dark; float: left;' value='"+subDate.getFullYear() +"-"+ month + "-" + day +"'> <br><br>" +
+        "   <span class='text' id='latePercentTakenOff'>Percent taken off: </span> <br> <br>" +
+        "   <span class='text' id='pointsAfterLatePolicy'>Points after late policy is applied: </span> <br> <br>" +
         "   <hr>" +
         "   <h2 class='text header2' id='assignmentPageTableEditAssignmentPredictedGrade'>Predicted Total Grade (before Late Grade Policy is applied):</h2>" +
         "   <h2 class='text header2' id='assignmentPageTableEditAssignmentPredictedGradeLate'>Predicted Total Grade:</h2>" +
@@ -372,7 +374,7 @@ export class GradePage{
                         quarterAssignment.latePolicyApplied.includeWeekends;
                     // @ts-ignore
                     assignment.querySelector(".assignmentPage.table.editAssignmentLateGradeStartAfterDueDate").checked =
-                        quarterAssignment.latePolicyApplied.startAfterDueDate;
+                        quarterAssignment.latePolicyApplied.startOnDueDate;
 
                     // @ts-ignore
                     assignment.querySelector(".assignmentPage.table.editAssignmentGradeValue").value =
@@ -438,6 +440,17 @@ export class GradePage{
                         "Predicted Total Grade (before Late Grade Policy is applied): "+ Math.round(CalculatorManager[this.schoolDistrictCode].calculate(newQuarterAssignments)*10)/10
                         + "%";
 
+                    // @ts-ignore
+                    let latePercentTakenOff = assignment.querySelector("#latePercentTakenOff");
+                    // @ts-ignore
+                    let predictedLatePoints = assignment.querySelector("#pointsAfterLatePolicy");
+                    if (!doLateGrade) {
+                        // @ts-ignore
+                        latePercentTakenOff.textContent = "Percent taken off: ";
+                        // @ts-ignore
+                        predictedLatePoints.textContent = "Points after late policy is applied: ";
+                    }
+
                     if (doLateGrade){
                         // @ts-ignore
                         let lateGradePercent = assignment.querySelector(".assignmentPage.table.editAssignmentLateGradePercent").value;
@@ -446,9 +459,10 @@ export class GradePage{
                         // @ts-ignore
                         let includeWeekends = assignment.querySelector(".assignmentPage.table.editAssignmentLateGradeIncludeWeekends").checked;
                         // @ts-ignore
-                        let startAfterDueDate = assignment.querySelector(".assignmentPage.table.editAssignmentLateGradeStartAfterDueDate").checked;
+                        let startOnDueDate = assignment.querySelector(".assignmentPage.table.editAssignmentLateGradeStartAfterDueDate").checked;
                         // @ts-ignore
                         let subDate = assignment.querySelector(".assignmentPage.table.editAssignmentSubDate").value;
+
 
                         let currentDate = new Date(subDate);
                         let dueDate = new Date(month + '/' + day + '/' + + '20' + year);
@@ -479,7 +493,7 @@ export class GradePage{
                         let monthDifference = monthDiff(currentDate, dueDate);
 
                         let lateMultiplier = 0;
-                        if (startAfterDueDate && dayDifference >= 1){
+                        if (startOnDueDate && dayDifference >= 0){
                             lateMultiplier = 1;
                         }
 
@@ -498,8 +512,22 @@ export class GradePage{
                             lateMultiplier += monthDifference;
                         }
                         if (lateMultiplier >= 0){
+                            // @ts-ignore
+                            latePercentTakenOff.textContent = "Percent taken off: "+ (parseFloat(lateGradePercent) * lateMultiplier) + "%";
+                            if ((parseFloat(lateGradePercent) * lateMultiplier) > 100){
+                                // @ts-ignore
+                                latePercentTakenOff.textContent = "Percent taken off: 100%";
+                            }
+
+
                             let latePoints = parseFloat(points.split("/")[0]) - (parseFloat(points.split("/")[0]) * ((parseFloat(lateGradePercent) * lateMultiplier)/100));
+                            if (latePoints < 0){
+                                latePoints = 0;
+                            }
                             let latePointsFinal = latePoints + "/" + points.split("/")[1];
+
+                            // @ts-ignore
+                            predictedLatePoints.textContent = "Points after late policy is applied: "+ latePointsFinal;
 
                             editData = {
                                 type: type,
@@ -511,7 +539,7 @@ export class GradePage{
                                     doLateGrade: doLateGrade,
                                     lateGradePercent: lateGradePercent,
                                     lateGradeFrequency: lateGradeFrequency,
-                                    startAfterDueDate: startAfterDueDate,
+                                    startOnDueDate: startOnDueDate,
                                     includeWeekends: includeWeekends,
                                     originalPoints: points,
                                     submissionDate: subDate

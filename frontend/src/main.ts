@@ -34,7 +34,7 @@ window.addEventListener("DOMContentLoaded", () => {
         "<div style='width: 50%; margin: auto;'>" +
         "<p class='text' style='text-align: center; font-size: 13px;'>Your Login information is sent to our server and then directly sent to your school district's login server. " +
         "Your login information is NEVER stored on the server (but is stored in the server's RAM, due to how computers work). <br>" +
-        "Don't beleive us? <br> The code for this grade calcultor (both server AND client) is <a class='text link' href='https://github.com/konekowo/Grade-Calculator-V3/' target='_blank'>open source.</a></p>" +
+        "<b>Don't beleive us?</b> <br> The code for this grade calcultor (both server AND client) is <a class='text link' href='https://github.com/konekowo/Grade-Calculator-V3/' target='_blank'>open source.</a></p>" +
         "<p class='text' style='text-align: center; font-size: 13px;'>Also, this web-app is completely free with no ads (which means I'm not making a single cent from this), so you should donate :)" +
         "<br>" +
         "You can do so here:" +
