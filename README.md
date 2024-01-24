@@ -16,6 +16,7 @@ Instructions on how to do this will be coming soon!
 ### How do I host Grade Calculator V3?
 - This how-to is for beginners in Node.js.
 - Also, at the time of writing this, macOS is not supported for hosting/developing Grade-Calculator-V3. Windows and Linux are supported.
+- Please note that you will have to use a reverse proxy with SSL if you are hosting this publicly as the frontend will not allow for connecting to the backend using plain HTTP due to security issues (if you are NOT connecting to it locally).
 1. Make sure you have git and Node.js 18 or above with NPM installed.
 2. Clone this repository by opening a terminal and entering this in:
 ```
@@ -44,7 +45,7 @@ npm i
 ```
 cd ..
 ```
-- If you want to develop, skip steps 8-12.
+- <b>If you want to develop, skip steps 8-12.</b>
 8. Keep your terminal open, we will be using that later. Now, you need to edit the `config.json` file in the root of your repository.
 9. Open `config.json` which is in the root of the repository with any text editor, such as, notepad.
 10. Here, you can change the backend port, the backend's public server address, and the maximum number of requests the server can be working on at a time. These options have the names: `backendPort` for the backend server port, `backendLink` for the backend's public server address, `backendMaxActiveRequests` for the maximum number of requests that the backend server can be working on at a time.

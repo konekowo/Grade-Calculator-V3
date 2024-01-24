@@ -18,6 +18,16 @@ window.addEventListener("DOMContentLoaded", () => {
         schoolDistrictNamesHTML += ("<option value='"+config.SchoolDistricts[i].code+"'>" + config.SchoolDistricts[i].name + "</option>");
     }
 
+    if (config.backendLink.startsWith("http://") && !(window.location.host.startsWith("localhost")
+        || window.location.host.startsWith("127.0.0.1") || window.location.host.startsWith("192.168"))){
+        new Dialog("" +
+            "<h1 class='text header' style='margin-top: 5px; margin-bottom: 5px; margin-left: 10px;'>Error</h1>" +
+            "<hr style='color: white'>" +
+            "<p class='text' style='text-align: center'>The owner of this server chose to use an insecure way of connecting to the server which may expose your Student ID and Password to attackers. Please notify the owner of this server to switch to using HTTPS and SSL.</p>",
+            true);
+        return;
+    }
+
     loginDialog = new Dialog("" +
         "<h1 class='text header' style='margin-top: 5px; margin-bottom: 5px; margin-left: 10px;'>Login</h1>" +
         "<hr style='color: white'>" +
