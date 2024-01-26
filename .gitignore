@@ -133,3 +133,4 @@ backend/browser
 backend/browserInstallTemp
 backend/screenshot.png
 frontend/src/test.json
+backend/log.txt

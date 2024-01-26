@@ -32,5 +32,6 @@
     }
   ],
   "backendLink": "http://localhost:9090/",
+  "backendDoDebugLog": false,
   "backendMaxActiveRequests": 4
 }

@@ -4,6 +4,7 @@ import os from "os";
 import execFile from "child_process";
 import exec from "child_process";
 import * as path from "path";
+import {Global} from "./Global";
 export class BrowserInstaller {
     public static isInstalled() {
         let promise = new Promise((resolve) => {
@@ -92,14 +93,14 @@ export class BrowserInstaller {
                                 // after download completed close filestream
                                 file.on("finish",  () => {
                                     file.close();
-                                    console.log("Downloaded Browser installer/archive");
-                                    console.log("Installing...")
+                                    Global.logger.log("Downloaded Browser installer/archive");
+                                    Global.logger.log("Installing...")
                                     if (os.type() == "Windows_NT") {
                                         // wait until installer is not busy
                                         setTimeout(async () => {
                                             const process = execFile.execFile("./browserInstallTemp/install.exe", ["/ExtractDir=./browser"]);
                                             process.on("exit", () => {
-                                                console.log("Browser Installed!");
+                                                Global.logger.log("Browser Installed!");
                                                 resolve("installed");
                                             })
 
@@ -112,7 +113,7 @@ export class BrowserInstaller {
                                                 if (err){
                                                     throw new Error("Error when unzipping the firefox archive! Error: "+err);
                                                 }
-                                                console.log("Browser Installed!");
+                                                Global.logger.log("Browser Installed!");
                                                 resolve("installed");
                                             });
                                         }, 1000);

@@ -6,6 +6,9 @@ import {ClientID, Status} from "./ClientID";
 import {BrowserInstaller} from "./BrowserInstaller";
 import os from "os";
 import bodyParser from "body-parser";
+import * as log4js from "log4js";
+import {Global} from "./Global";
+
 
 if (os.type() == "Darwin"){
     throw new Error("macOS is currently not supported!")
@@ -15,6 +18,14 @@ const app: express.Application = express();
 const port: number = serverConfig.backendPort;
 
 const loginManager = new LoginManager();
+
+
+log4js.configure({
+    appenders: { file: { type: "file", filename: "log.txt" }, stdout: { type: "stdout" } },
+    categories: { default: { appenders: ["file", "stdout"], level: serverConfig.backendDoDebugLog? "debug" : "info" } },
+});
+
+Global.logger = log4js.getLogger();
 
 export class ClientIDS {
     public static clientIDs: ClientID[] = [];
@@ -31,18 +42,18 @@ export class ClientIDS {
     public static getActiveRequests(){
         let activeRequests = 0;
         ClientIDS.clientIDs.forEach((clientID) => {
-            // @ts-ignore
-            if (clientID.status != Status.Success || clientID.status != Status.Failed){
+            if (clientID.status != Status.Success && clientID.status != Status.Failed){
                 activeRequests++;
             }
         });
+        Global.logger.debug("Active requests:", activeRequests);
         return activeRequests;
     }
 }
 
 BrowserInstaller.isInstalled().then((result) => {
    if (!result){
-       console.log("Browser not installed, installing... (This could take a few minutes, please wait!)")
+       Global.logger.log("Browser not installed, installing... (This could take a few minutes, please wait!)")
        BrowserInstaller.install().then(() => {
            init();
        });
@@ -52,14 +63,15 @@ BrowserInstaller.isInstalled().then((result) => {
    }
 });
 
+
 function init() {
     app.listen(port, () => {
-        console.log(`Listening at http://localhost:${port}/`);
+        Global.logger.log(`Listening at http://localhost:${port}/`);
     });
     setInterval(()=> {
         for (let i = 0; i < ClientIDS.clientIDs.length; i++){
            if (Date.now() > ClientIDS.clientIDs[i].expires){
-               console.log("Expiring ClientID:", ClientIDS.clientIDs[i].clientID)
+               Global.logger.log("Expiring ClientID:", ClientIDS.clientIDs[i].clientID)
                ClientIDS.clientIDs.splice(i, 1);
            }
         }
@@ -80,8 +92,8 @@ app.use('/api/login/', (req: Request, res: Response) => {
     }
 
     if (ClientIDS.getActiveRequests() >= serverConfig.backendMaxActiveRequests){
-        console.warn("\x1b[33mServer is currently being rate-limited, consider turning up 'backendMaxActiveRequests' " +
-            "to allow for more requests if your hardware can handle it.\x1b[0m");
+        Global.logger.warn("Server is currently being rate-limited, consider turning up 'backendMaxActiveRequests' " +
+            "to allow for more requests if your hardware can handle it.");
         res.send("Error: This server is currently being rate-limited, please try again later.");
         return;
     }
@@ -106,11 +118,12 @@ app.use('/api/login/', (req: Request, res: Response) => {
         throw new Error("Login Script undefined! " +
             "Is the login script that was requested by the client registered in the LoginManager?")
     }
-
     let clientID = new ClientID(schoolDistrictCode);
+    Global.logger.log("Logging in "+clientID.clientID+"!");
     ClientIDS.clientIDs.push(clientID);
     duplicatedLoginObj.doLogin(clientID.clientID, req.body.studentid, req.body.password).then((result:any) => {
-        console.log(result);
+        Global.logger.debug(clientID.clientID+":", result);
+        Global.logger.log("Done with "+clientID.clientID+"!");
     });
 
     res.send(clientID);

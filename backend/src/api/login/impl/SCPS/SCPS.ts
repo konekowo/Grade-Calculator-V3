@@ -4,6 +4,7 @@ import {ClientIDS} from "../../../../main";
 import request from "request";
 import {parse} from 'node-html-parser';
 import {JSDOM} from 'jsdom';
+import {Global} from "../../../../Global";
 
 export class SCPS extends Login {
     public async doLogin(clientID: string, StudentID: string, Password: string): Promise<any> {
@@ -42,6 +43,15 @@ export class SCPS extends Login {
             request(options, (error, response, body) => {
                 if (error) throw new Error(error);
                 let parsed: string[] = [];
+                if (body.length == 0){
+                    // @ts-ignore
+                    clientObj.status = Status.Failed;
+                    // @ts-ignore
+                    clientObj.errorMessage = "Unexpected error, your school's grading portal may be rate-limiting Grade Calculator V3, try again in a few minutes.";
+                    resolve(Status.Failed);
+                    Global.logger.warn("The SCPS grading portal may be rate-limiting this server's ip. Body returned from request was empty.")
+                    return;
+                }
                 if (body.toString().includes("We are unable to validate the information entered.")){
                     // @ts-ignore
                     clientObj.status = Status.Failed;
@@ -270,8 +280,8 @@ export class SCPS extends Login {
                                     try {
                                         elems = gradesPage.window.document.querySelectorAll("table > tbody")[2].children;
                                     } catch (e) {
-                                        console.warn(e);
-                                        console.log(body);
+                                        Global.logger.error(e);
+                                        Global.logger.debug(body);
                                     }
                                     if (elems) {
 
@@ -343,7 +353,7 @@ export class SCPS extends Login {
                                             clientObj.status = Status.Success;
                                             // @ts-ignore
                                             clientObj.courseGrades = allCoursesParsed;
-                                            console.log("Done with "+clientID+"!");
+                                            resolve(Status.Success);
                                             return Status.Success;
                                         }
 
