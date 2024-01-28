@@ -14,21 +14,6 @@
           "weight": 20
         }
       }
-    },
-    {
-      "code": "CMS",
-      "name": "Charlotte Mecklenburg Schools",
-      "weights":{
-        "prepare": {
-          "weight": 20
-        },
-        "rehearse": {
-          "weight": 30
-        },
-        "perform": {
-          "weight": 50
-        }
-      }
     }
   ],
   "backendLink": "http://localhost:9090/",
