@@ -41,7 +41,7 @@ window.addEventListener("DOMContentLoaded", () => {
         "<input type='password' placeholder='Password' id='passwordInput'>" +
         "<br>" +
         "<p class='text' style='text-align: center; color: rgb(255,194,194);' id='loginErrorMsg'></p>" +
-        "<div style='width: 50%; margin: auto;'>" +
+        "<div style='width: 55%; margin: auto;'>" +
         "<p class='text' style='text-align: center; font-size: 13px;'>Your Login information is sent to our server and then directly sent to your school district's login server. " +
         "Your login information is NEVER stored on the server (but is stored in the server's RAM momentarily, due to how computers work). <br>" +
         "<b>Don't beleive us?</b> <br> The code for this grade calcultor (both server AND client) is <a class='text link' href='https://github.com/konekowo/Grade-Calculator-V3/' target='_blank'>open source.</a></p>" +
