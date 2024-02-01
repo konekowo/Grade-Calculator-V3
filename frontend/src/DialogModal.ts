@@ -9,7 +9,7 @@ export class DialogModal extends Dialog{
         this.modal = document.createElement("div");
         this.modal.style.position = "absolute";
         this.modal.style.backgroundColor = "rgba(0,0,0,0)";
-        this.modal.style.width = "100%";
+        this.modal.style.width = "100vw";
         this.modal.style.height = "100vh";
         this.modal.style.top = "0px";
         this.modal.style.left = "0px";
