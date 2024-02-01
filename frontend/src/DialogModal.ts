@@ -7,7 +7,7 @@ export class DialogModal extends Dialog{
     public constructor(HTMLcontent:string) {
         super(HTMLcontent, false);
         this.modal = document.createElement("div");
-        this.modal.style.position = "absolute";
+        this.modal.style.position = "fixed";
         this.modal.style.backgroundColor = "rgba(0,0,0,0)";
         this.modal.style.width = "100vw";
         this.modal.style.height = "100vh";
