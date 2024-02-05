@@ -281,6 +281,12 @@ export class SCPS extends Login {
                                         elems = gradesPage.window.document.querySelectorAll("table > tbody")[2].children;
                                     } catch (e) {
                                         Global.logger.error(e);
+                                        // @ts-ignore
+                                        clientObj.status = Status.Failed;
+                                        // @ts-ignore
+                                        clientObj.errorMessage = "There was an unexpected error. Please try again.";
+                                        resolve(Status.Failed);
+                                        return;
                                         Global.logger.debug(body);
                                     }
                                     if (elems) {
