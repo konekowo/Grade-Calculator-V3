@@ -5,7 +5,7 @@ export class DialogModal extends Dialog{
     private modal: HTMLDivElement;
 
     public constructor(HTMLcontent:string) {
-        super(HTMLcontent, false);
+        super(HTMLcontent, false, true);
         this.modal = document.createElement("div");
         this.modal.style.position = "fixed";
         this.modal.style.backgroundColor = "rgba(0,0,0,0)";
@@ -16,7 +16,6 @@ export class DialogModal extends Dialog{
         this.modal.style.transition = "0.4s background-color";
         this.modal.style.display = "none";
         this.modal.style.zIndex = this.dialogElem.style.zIndex;
-        this.dialogElem.remove();
         this.modal.appendChild(this.dialogElem);
         document.body.appendChild(this.modal);
     }

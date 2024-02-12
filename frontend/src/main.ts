@@ -66,8 +66,20 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // @ts-ignore
+    document.querySelector('#passwordInput').addEventListener("keydown", (e) => {
+        // @ts-ignore
+        if (e.key == "Enter"){
+            // @ts-ignore
+            window.onClickLogin();
+        }
+    });
+
 
 });
+
+
+
 
 // @ts-ignore
 window.onClickLogin = () => {

@@ -4,7 +4,10 @@ export class Dialog {
     protected createTime: number;
     protected isOpened: boolean = false;
     protected static zIndex = 300;
-    public constructor(HTMLcontent:string, autoOpen:boolean) {
+    public constructor(HTMLcontent:string, autoOpen:boolean, dontAppend?: boolean) {
+        if (dontAppend == null){
+            dontAppend = false;
+        }
         this.dialogElem = document.createElement("div");
         this.dialogElem.style.position = "absolute";
         this.dialogElem.style.top = "50vh";
@@ -22,7 +25,9 @@ export class Dialog {
         this.dialogElem.style.zIndex = Dialog.zIndex.toString();
         this.dialogElem.innerHTML = HTMLcontent;
         this.dialogElem.style.display = "none";
-        document.body.appendChild(this.dialogElem);
+        if (!dontAppend){
+            document.body.appendChild(this.dialogElem);
+        }
         Dialog.zIndex++;
         this.createTime = Date.now();
         if (autoOpen){

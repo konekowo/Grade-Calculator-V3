@@ -226,12 +226,32 @@ export class GradePage{
     }
 
     private getAssignmentHTML(term: Quarter, courseID: string, assignmentID: string, editData:any) {
+        let commentElem = "";
+        if (editData.comment != ""){
+            // @ts-ignore
+            window["comment"+term.toString().toLowerCase()+courseID + assignmentID] = () => {
+                let commentWindow = new DialogModal("" +
+                    "<h2 class='text header2' style='margin-left: 10px; margin-top: 5px; margin-bottom: 5px;'>Comment</h2>" +
+                    "<hr style='color: white;'>" +
+                    "<p class='text' style='text-align: center'>"+editData.comment+"</p>" +
+                    "<button class='button' style='color: white; position: relative; left: 50%; transform: translateX(-50%); padding-left: 25px; padding-right: 25px;' onclick='window[\"closeAndDestroyCommentWindow"+term.toString().toLowerCase()+courseID + assignmentID+"\"]();'>Done</button>"
+                );
+                // @ts-ignore
+                window["closeAndDestroyCommentWindow"+term.toString().toLowerCase()+courseID + assignmentID] = () => {
+                    commentWindow.DestroyWithAnim();
+                }
+                commentWindow.OpenDialog();
+
+
+            }
+            commentElem = "<button class='button' onclick='window[\"comment"+term.toString().toLowerCase()+courseID + assignmentID+"\"]();'><img src='./comment.svg' alt='View Comments'></button>"
+        }
         return "<tr class='assignmentPage table body"+term.toString().toLowerCase()+courseID+" assignment id"+assignmentID+"'>" +
         "   <td>"+editData.type.toUpperCase()+"</td>" +
         "   <td>"+editData.date+"</td>" +
         "   <td>"+editData.name+"</td>" +
         "   <td>"+editData.points+"</td>" +
-        "   <td></td>" +
+        "   <td>"+commentElem+"</td>" +
         "   <td>" +
         "       <button class='button assignmentEdit' style='float: left;' onclick='window[\"editAssignment"+term.toString().toLowerCase()+courseID + assignmentID+"\"]();'><img src='./edit.svg' alt='Edit Assignment'></button>" +
         "       <button class='button assignmentDelete' style='float: right;' onclick='window[\"deleteAssignment"+term.toString().toLowerCase()+courseID + assignmentID+"\"]();'><img src='./delete.svg' alt='Delete Assignment'></button>" +
