@@ -440,6 +440,7 @@ export class GradePage{
                         date: date,
                         points: points,
                         assignmentID: assignmentID,
+                        comment: "",
                         latePolicyApplied: false
                     }
 
@@ -554,6 +555,7 @@ export class GradePage{
                                 name: name,
                                 date: date,
                                 points: latePointsFinal,
+                                comment: "",
                                 assignmentID: assignmentID,
                                 latePolicyApplied: {
                                     doLateGrade: doLateGrade,
