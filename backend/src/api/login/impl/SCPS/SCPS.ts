@@ -41,7 +41,15 @@ export class SCPS extends Login {
             };
 
             request(options, (error, response, body) => {
-                if (error) throw new Error(error);
+                if (error) {
+                    // @ts-ignore
+                    clientObj.status = Status.Failed;
+                    // @ts-ignore
+                    clientObj.errorMessage = "Unexpected error, your school's grading portal may be rate-limiting Grade Calculator V3, try again in a few minutes.";
+                    resolve(Status.Failed);
+                    Global.logger.warn("The SCPS grading portal may be rate-limiting this server's ip. HTTP error returned.")
+                    return;
+                }
                 let parsed: string[] = [];
                 if (body.length == 0){
                     // @ts-ignore
@@ -84,7 +92,15 @@ export class SCPS extends Login {
                 };
 
                 request(options2, function (error, response, body) {
-                    if (error) throw new Error(error);
+                    if (error) {
+                        // @ts-ignore
+                        clientObj.status = Status.Failed;
+                        // @ts-ignore
+                        clientObj.errorMessage = "Unexpected error, your school's grading portal may be rate-limiting Grade Calculator V3, try again in a few minutes.";
+                        resolve(Status.Failed);
+                        Global.logger.warn("The SCPS grading portal may be rate-limiting this server's ip. HTTP error returned.")
+                        return;
+                    }
                     const gradePortalHome = parse(body);
                     let sessionIdElement = gradePortalHome.querySelector("#sessionid");
                     let encsesElement = gradePortalHome.querySelector("#encses");
@@ -249,7 +265,15 @@ export class SCPS extends Login {
                                 request(options4, function (error, response, body) {
                                     // @ts-ignore
                                     clientObj.status = Status.GrabbingGrades;
-                                    if (error) throw new Error(error);
+                                    if (error) {
+                                        // @ts-ignore
+                                        clientObj.status = Status.Failed;
+                                        // @ts-ignore
+                                        clientObj.errorMessage = "Unexpected error, your school's grading portal may be rate-limiting Grade Calculator V3, try again in a few minutes.";
+                                        resolve(Status.Failed);
+                                        Global.logger.warn("The SCPS grading portal may be rate-limiting this server's ip. HTTP error returned.")
+                                        return;
+                                    }
                                     let currentCourse = new Course();
                                     allCoursesParsed.forEach((course) => {
                                         if (course.courseID == options4.form.corNumId){
