@@ -65,7 +65,7 @@ export class SCPSCalculator {
                 }
             });
             // @ts-ignore
-            if (!weights[key]["assignments"].length == 0){
+            if (!weights[key]["assignments"].length == 0 && maxPoints != 0){
                 totalGrade += ((points/maxPoints) * (weights[key]["weight"]/100)) * 100;
             }
             else{
