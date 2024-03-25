@@ -1,9 +1,15 @@
 
-export abstract class Login {
+export class Login {
 
-    public abstract doLogin(clientID: string, StudentID: string, Password: string): Promise<any>;
+    public async doLogin(clientID: string, StudentID: string, Password: string): Promise<any> {
+        throw new Error("You're supposed to extend off of this Login class and override the doLogin() method.");
+    }
 
-    public abstract duplicate(): void;
+
+    public duplicate() {
+        return new Login();
+    }
+
 
 }
 
